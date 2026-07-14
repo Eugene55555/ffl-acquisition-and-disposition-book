@@ -1,9 +1,14 @@
-const SITE_URL = process.env.SITE_URL || 'https://example.github.io/blog-site';
+const BASE_PATH = process.env.BASE_PATH || '/ffl-acquisition-and-disposition-book';
+
+function getSiteUrl(): string {
+  return process.env.SITE_URL || `https://eugene55555.github.io${BASE_PATH}`;
+}
 
 export default function robots() {
+  const siteUrl = getSiteUrl();
   return {
     rules: [{ userAgent: '*', allow: '/' }],
-    sitemap: `${SITE_URL}/sitemap.xml`,
-    host: SITE_URL,
+    sitemap: `${siteUrl}/sitemap.xml`,
+    host: siteUrl,
   };
 }

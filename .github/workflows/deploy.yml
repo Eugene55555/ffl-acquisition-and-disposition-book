@@ -26,7 +26,8 @@ jobs:
       - run: npm ci
       - run: npm run build
         env:
-          SITE_URL: ${{ vars.SITE_URL || 'https://example.github.io/blog-site' }}
+          BASE_PATH: /ffl-acquisition-and-disposition-book
+          SITE_URL: ${{ vars.SITE_URL || 'https://eugene55555.github.io/ffl-acquisition-and-disposition-book' }}
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

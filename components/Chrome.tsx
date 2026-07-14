@@ -5,18 +5,18 @@ export function Header({ locale }: { locale: Locale }) {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-gray-200 bg-white/80 backdrop-blur">
       <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
-        <a href={`/${locale}/`} className="flex items-center gap-2">
+        <Link href={`/${locale}/`} className="flex items-center gap-2">
           <span className="inline-block h-7 w-7 rounded-lg bg-[linear-gradient(to_right,#FF512F,#F09819)]" />
           <span className="text-lg font-bold text-gray-900">Blog</span>
-        </a>
+        </Link>
         <nav className="flex items-center gap-5 text-sm font-medium text-gray-600">
-          <a className="hover:text-orange-500" href={`/${locale}/blog/`}>Blog</a>
-          <a className="hover:text-orange-500" href={`/${locale}/about/`}>About</a>
-          <a className="hover:text-orange-500" href={`/${locale}/buy/`}>Buy</a>
-          <a className="hover:text-orange-500" href={`/${locale}/contact/`}>Contact</a>
+          <Link className="hover:text-orange-500" href={`/${locale}/blog/`}>Blog</Link>
+          <Link className="hover:text-orange-500" href={`/${locale}/about/`}>About</Link>
+          <Link className="hover:text-orange-500" href={`/${locale}/buy/`}>Buy</Link>
+          <Link className="hover:text-orange-500" href={`/${locale}/contact/`}>Contact</Link>
           <span className="ml-2 flex gap-1">
             {locales.map((l) => (
-              <a
+              <Link
                 key={l}
                 href={`/${l}/`}
                 className={`rounded px-2 py-1 text-xs ${
@@ -24,7 +24,7 @@ export function Header({ locale }: { locale: Locale }) {
                 }`}
               >
                 {localeLabels[l]}
-              </a>
+              </Link>
             ))}
           </span>
         </nav>
@@ -40,10 +40,10 @@ export function Footer({ locale }: { locale: Locale }) {
       <div className="mx-auto flex max-w-5xl flex-col gap-2 px-4 py-8 text-sm text-gray-500 sm:flex-row sm:items-center sm:justify-between">
         <span>© {year} Blog. {locale === 'ru' ? 'Все права защищены.' : 'All rights reserved.'}</span>
         <nav className="flex gap-4">
-          <a className="hover:text-orange-500" href={`/${locale}/blog/`}>Blog</a>
-          <a className="hover:text-orange-500" href={`/${locale}/about/`}>About</a>
-          <a className="hover:text-orange-500" href={`/${locale}/buy/`}>Buy</a>
-          <a className="hover:text-orange-500" href={`/${locale}/contact/`}>Contact</a>
+          <Link className="hover:text-orange-500" href={`/${locale}/blog/`}>Blog</Link>
+          <Link className="hover:text-orange-500" href={`/${locale}/about/`}>About</Link>
+          <Link className="hover:text-orange-500" href={`/${locale}/buy/`}>Buy</Link>
+          <Link className="hover:text-orange-500" href={`/${locale}/contact/`}>Contact</Link>
         </nav>
       </div>
     </footer>

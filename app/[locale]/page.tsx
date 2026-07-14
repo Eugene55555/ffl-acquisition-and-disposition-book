@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { t } from '@/src/i18n/ui';
 import { locales, type Locale } from '@/src/i18n/settings';
 import { getAllPosts } from '@/src/lib/posts';
+import { alternatesFor, OG_IMAGE } from '@/src/lib/seo';
 import { BookCard } from '@/components/BookCard';
 
 export function generateStaticParams() {
@@ -14,6 +15,14 @@ export function generateMetadata({ params }: { params: { locale: string } }): Me
   return {
     title: t(locale, 'seo.home.title'),
     description: t(locale, 'seo.home.desc'),
+    alternates: alternatesFor('/'),
+    openGraph: {
+      title: t(locale, 'seo.home.title'),
+      description: t(locale, 'seo.home.desc'),
+      locale: locale,
+      images: [OG_IMAGE[locale]],
+    },
+    twitter: { images: [OG_IMAGE[locale]] },
   };
 }
 

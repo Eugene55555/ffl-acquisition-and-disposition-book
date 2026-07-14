@@ -37,6 +37,11 @@ const en: Dict = {
   'seo.contact.title': 'Get in touch',
   'seo.contact.desc': 'Drop us a message and we will reply soon.',
   'post.share': 'Share',
+  'footer.tagline': 'Honest notes and products — built fast and clean.',
+  'footer.contact': 'Contact',
+  'footer.made': 'Made with ❤️',
+  'about.body': 'We write about what matters — honest, no fluff. This blog runs on a fast static stack, so it loads instantly and indexes well.',
+  'contact.placeholder': 'REPLACE_ME',
 };
 
 const ru: Dict = {
@@ -73,6 +78,11 @@ const ru: Dict = {
   'seo.contact.title': 'Свяжитесь с нами',
   'seo.contact.desc': 'Напишите нам — ответим в ближайшее время.',
   'post.share': 'Поделиться',
+  'footer.tagline': 'Честные заметки и продукты — быстро и чисто.',
+  'footer.contact': 'Связь',
+  'footer.made': 'Сделано с ❤️',
+  'about.body': 'Мы пишем о том, что важно — честно, без воды. Этот блог собран на быстром статическом стеке, поэтому он загружается мгновенно и хорошо индексируется.',
+  'contact.placeholder': 'REPLACE_ME',
 };
 
 const dicts: Record<Locale, Dict> = { en, ru };

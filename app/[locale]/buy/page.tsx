@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { t } from '@/src/i18n/ui';
 import { locales, type Locale } from '@/src/i18n/settings';
 import { BookCard } from '@/components/BookCard';
+import { alternatesFor, OG_IMAGE } from '@/src/lib/seo';
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -12,6 +13,14 @@ export function generateMetadata({ params }: { params: { locale: string } }): Me
   return {
     title: t(locale, 'seo.buy.title'),
     description: t(locale, 'seo.buy.desc'),
+    alternates: alternatesFor('/buy'),
+    openGraph: {
+      title: t(locale, 'seo.buy.title'),
+      description: t(locale, 'seo.buy.desc'),
+      locale: locale,
+      images: [OG_IMAGE[locale]],
+    },
+    twitter: { images: [OG_IMAGE[locale]] },
   };
 }
 

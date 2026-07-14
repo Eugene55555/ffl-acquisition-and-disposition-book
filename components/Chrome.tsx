@@ -73,7 +73,12 @@ export function Header({ locale }: { locale: Locale }) {
         {/* Desktop nav */}
         <nav className="hidden items-center gap-1 text-sm font-medium md:flex">
           {NAV.map((item) => (
-            <Link key={item.key} href={`/${locale}${item.href}`} className={linkClass(item.href)}>
+            <Link
+              key={item.key}
+              href={`/${locale}${item.href}`}
+              aria-current={isActive(item.href) ? 'page' : undefined}
+              className={linkClass(item.href)}
+            >
               {t(locale, item.key)}
             </Link>
           ))}
@@ -107,6 +112,7 @@ export function Header({ locale }: { locale: Locale }) {
                 key={item.key}
                 href={`/${locale}${item.href}`}
                 onClick={() => setOpen(false)}
+                aria-current={isActive(item.href) ? 'page' : undefined}
                 className={linkClass(item.href)}
               >
                 {t(locale, item.key)}
@@ -135,9 +141,7 @@ export function Footer({ locale }: { locale: Locale }) {
             <span className="text-lg font-bold text-gray-900 dark:text-white">Blog</span>
           </div>
           <p className="mt-3 max-w-xs text-sm text-gray-500 dark:text-gray-400">
-            {locale === 'ru'
-              ? 'Честные заметки и продукты — быстро и чисто.'
-              : 'Honest notes and products — built fast and clean.'}
+            {t(locale, 'footer.tagline')}
           </p>
         </div>
         <div>
@@ -152,7 +156,7 @@ export function Footer({ locale }: { locale: Locale }) {
         </div>
         <div>
           <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
-            {locale === 'ru' ? 'Связь' : 'Contact'}
+            {t(locale, 'footer.contact')}
           </h3>
           <a
             href="mailto:hello@example.com"
@@ -165,7 +169,7 @@ export function Footer({ locale }: { locale: Locale }) {
       <div className="border-t border-gray-200 dark:border-gray-800">
         <div className="mx-auto flex max-w-5xl flex-col gap-2 px-4 py-6 text-sm text-gray-500 sm:flex-row sm:items-center sm:justify-between dark:text-gray-400">
           <span>© {year} Blog. {locale === 'ru' ? 'Все права защищены.' : 'All rights reserved.'}</span>
-          <span className="text-xs">{locale === 'ru' ? 'Сделано с ❤️' : 'Made with ❤️'}</span>
+          <span className="text-xs">{t(locale, 'footer.made')}</span>
         </div>
       </div>
     </footer>

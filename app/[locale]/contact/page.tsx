@@ -30,11 +30,10 @@ export default function ContactPage({ params }: { params: { locale: string } }) 
       <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{t(locale, 'contact.title')}</h1>
       <p className="mt-3 text-gray-600 dark:text-gray-300">{t(locale, 'contact.subtitle')}</p>
 
-      {/* ЗАГЛУШКА ФОРМЫ.
-          Подставь свой Formspree-эндпоинт в action="https://formspree.io/f/XXXXXXX"
-          или настрой Cloudflare Worker. Бэкенд не требуется. */}
+      {/* Форма контакта через Formspree (без БД). Письма приходят на твой email.
+          Эндпоинт можно переопределить через NEXT_PUBLIC_FORMSPREE_ID при сборке. */}
       <form
-        action="https://formspree.io/f/REPLACE_ME"
+        action={`https://formspree.io/f/${process.env.NEXT_PUBLIC_FORMSPREE_ID || 'xlgqdblz'}`}
         method="POST"
         className="mt-8 space-y-4"
       >

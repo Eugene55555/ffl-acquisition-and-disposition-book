@@ -95,7 +95,7 @@ export function LanguageSwitcher({ locale }: { locale: Locale }) {
         <ul
           role="listbox"
           aria-label={t(locale, 'lang.switch')}
-          className="absolute right-0 z-50 mt-2 w-48 origin-top-right overflow-hidden rounded-xl border border-gray-200 bg-white py-1 shadow-lg ring-1 ring-black/5"
+          className="absolute left-0 z-50 mt-2 w-48 origin-top-left overflow-hidden rounded-xl border border-gray-200 bg-white py-1 shadow-lg ring-1 ring-black/5 sm:left-auto sm:right-0 sm:origin-top-right dark:border-gray-700 dark:bg-gray-900"
         >
           {locales.map((l) => {
             const active = l === locale;
@@ -104,8 +104,8 @@ export function LanguageSwitcher({ locale }: { locale: Locale }) {
                 <button
                   type="button"
                   onClick={() => switchTo(l)}
-                  className={`flex w-full items-center justify-between px-4 py-2 text-left text-sm transition hover:bg-orange-50 ${
-                    active ? 'font-semibold text-orange-600' : 'text-gray-700'
+                  className={`flex w-full items-center justify-between px-4 py-2 text-left text-sm transition hover:bg-orange-50 dark:hover:bg-orange-500/10 ${
+                    active ? 'font-semibold text-orange-600 dark:text-orange-400' : 'text-gray-700 dark:text-gray-200'
                   }`}
                 >
                   <span>{localeNames[l]}</span>

@@ -27,8 +27,8 @@ export default function ContactPage({ params }: { params: { locale: string } }) 
   const locale = (locales.includes(params.locale as Locale) ? params.locale : 'en') as Locale;
   return (
     <div className="mx-auto max-w-xl">
-      <h1 className="text-3xl font-bold text-gray-900">{t(locale, 'contact.title')}</h1>
-      <p className="mt-3 text-gray-600">{t(locale, 'contact.subtitle')}</p>
+      <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{t(locale, 'contact.title')}</h1>
+      <p className="mt-3 text-gray-600 dark:text-gray-300">{t(locale, 'contact.subtitle')}</p>
 
       {/* ЗАГЛУШКА ФОРМЫ.
           Подставь свой Formspree-эндпоинт в action="https://formspree.io/f/XXXXXXX"

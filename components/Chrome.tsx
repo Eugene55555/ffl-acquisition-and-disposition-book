@@ -119,9 +119,9 @@ export function Header({ locale }: { locale: Locale }) {
               </Link>
             ))}
           </nav>
-          <div className="mt-3 flex items-center justify-between border-t border-gray-200 pt-3 dark:border-gray-800">
-            <LanguageSwitcher locale={locale} />
+          <div className="mt-3 flex items-center justify-end gap-2 border-t border-gray-200 pt-3 dark:border-gray-800">
             <ThemeToggle />
+            <LanguageSwitcher locale={locale} />
           </div>
         </div>
       )}

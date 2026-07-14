@@ -28,8 +28,13 @@ export default function BuyPage({ params }: { params: { locale: string } }) {
   const locale = (locales.includes(params.locale as Locale) ? params.locale : 'en') as Locale;
   return (
     <div className="mx-auto max-w-3xl">
-      <h1 className="mb-8 text-3xl font-bold text-gray-900">{t(locale, 'buy.title')}</h1>
+      <h1 className="mb-8 text-3xl font-bold text-gray-900 dark:text-white">{t(locale, 'buy.title')}</h1>
       <BookCard locale={locale} />
+      <p className="mt-6 text-center text-sm text-gray-500 dark:text-gray-400">
+        {locale === 'ru'
+          ? '«Купить на сайте» — прямая оплата (Stripe / Lemon Squeezy). «Купить на Amazon» — бумажная и твёрдая версия на Amazon.'
+          : '“Buy on site” is direct checkout (Stripe / Lemon Squeezy). “Buy on Amazon” is the paperback & hardcover on Amazon.'}
+      </p>
     </div>
   );
 }

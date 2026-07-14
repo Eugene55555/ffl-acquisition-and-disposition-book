@@ -39,5 +39,12 @@ export function Comments({ locale }: { locale: Locale }) {
     ref.current.appendChild(s);
   }, [repo, repoId, category, categoryId, locale]);
 
-  return <div ref={ref} className="mt-12" />;
+  return (
+    <div className="mt-12">
+      <div ref={ref} />
+      <p className="mt-3 text-center text-xs text-gray-400 dark:text-gray-500">
+        Sign in with GitHub to comment.
+      </p>
+    </div>
+  );
 }

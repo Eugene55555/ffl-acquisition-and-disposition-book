@@ -24,7 +24,7 @@ const copy = {
 export function BookCard({ locale }: { locale: Locale }) {
   const c = copy[locale];
   return (
-    <section className="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
+    <section className="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm dark:border-gray-800 dark:bg-gray-900">
       <div className="flex flex-col items-center gap-8 sm:flex-row sm:items-center">
         <img
           src={BOOK.cover}
@@ -34,8 +34,8 @@ export function BookCard({ locale }: { locale: Locale }) {
           className="rounded-lg shadow-md"
         />
         <div className="flex-1 text-center sm:text-left">
-          <h2 className="text-2xl font-bold text-gray-900">{c.title}</h2>
-          <p className="mt-3 text-gray-600">{c.blurb}</p>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{c.title}</h2>
+          <p className="mt-3 text-gray-600 dark:text-gray-300">{c.blurb}</p>
           <div className="mt-6 flex flex-col items-center gap-3 sm:flex-row sm:items-center">
             <a
               href={BOOK.amazonUrl}

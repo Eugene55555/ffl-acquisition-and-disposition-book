@@ -26,6 +26,17 @@ const en: Dict = {
   'contact.send': 'Send message',
   'footer.rights': 'All rights reserved.',
   'lang.switch': 'Language',
+  'seo.home.title': 'Blog — Notes, guides and products',
+  'seo.home.desc': 'A fast, clean static blog with honest notes, guides and products.',
+  'seo.blog.title': 'Blog',
+  'seo.blog.desc': 'Latest posts, guides and notes.',
+  'seo.buy.title': 'Get the product',
+  'seo.buy.desc': 'Buy the FFL book on Amazon.',
+  'seo.about.title': 'About us',
+  'seo.about.desc': 'Who we are and what we write about.',
+  'seo.contact.title': 'Get in touch',
+  'seo.contact.desc': 'Drop us a message and we will reply soon.',
+  'post.share': 'Share',
 };
 
 const ru: Dict = {
@@ -51,6 +62,17 @@ const ru: Dict = {
   'contact.send': 'Отправить',
   'footer.rights': 'Все права защищены.',
   'lang.switch': 'Язык',
+  'seo.home.title': 'Блог — заметки, гайды и продукты',
+  'seo.home.desc': 'Быстрый и чистый статический блог с честными заметками, гайдами и продуктами.',
+  'seo.blog.title': 'Блог',
+  'seo.blog.desc': 'Свежие записи, гайды и заметки.',
+  'seo.buy.title': 'Купить продукт',
+  'seo.buy.desc': 'Купить книгу FFL на Amazon.',
+  'seo.about.title': 'О нас',
+  'seo.about.desc': 'Кто мы и о чём пишем.',
+  'seo.contact.title': 'Свяжитесь с нами',
+  'seo.contact.desc': 'Напишите нам — ответим в ближайшее время.',
+  'post.share': 'Поделиться',
 };
 
 const dicts: Record<Locale, Dict> = { en, ru };

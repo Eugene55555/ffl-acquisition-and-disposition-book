@@ -117,4 +117,17 @@
   body {
     @apply bg-white text-gray-800 antialiased;
   }
+  :root {
+    color-scheme: light;
+  }
+  .dark {
+    color-scheme: dark;
+  }
+  .dark body {
+    background-color: var(--color-gray-950);
+    color: var(--color-gray-100);
+  }
+  ::selection {
+    background: color-mix(in oklch, var(--color-orange-500) 25%, transparent);
+  }
 }

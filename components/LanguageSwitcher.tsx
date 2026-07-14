@@ -95,7 +95,7 @@ export function LanguageSwitcher({ locale }: { locale: Locale }) {
         <ul
           role="listbox"
           aria-label={t(locale, 'lang.switch')}
-          className="absolute left-0 z-50 mt-2 w-48 origin-top-left overflow-hidden rounded-xl border border-gray-200 bg-white py-1 shadow-lg ring-1 ring-black/5 sm:left-auto sm:right-0 sm:origin-top-right dark:border-gray-700 dark:bg-gray-900"
+          className="dropdown-in absolute right-0 z-50 mt-2 w-48 max-w-[calc(100vw-1rem)] origin-top-right overflow-hidden rounded-xl border border-gray-200 bg-white py-1 shadow-lg ring-1 ring-black/5 dark:border-gray-700 dark:bg-gray-900"
         >
           {locales.map((l) => {
             const active = l === locale;

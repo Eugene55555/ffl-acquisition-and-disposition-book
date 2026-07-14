@@ -32,12 +32,12 @@ export default function Home({ params }: { params: { locale: string } }) {
   return (
     <div className="space-y-12">
       <section className="rounded-2xl bg-gradient-to-r from-[#FF512F] to-[#F09819] px-8 py-16 text-center text-white">
-        <h1 className="text-4xl font-bold sm:text-5xl">Blog</h1>
+        <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">Blog</h1>
         <p className="mx-auto mt-4 max-w-xl text-lg text-white/90">{t(locale, 'home.tagline')}</p>
         <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Link
             href={`/${locale}/blog/`}
-            className="inline-block rounded-lg bg-white px-6 py-3 font-semibold text-orange-600 shadow hover:bg-gray-50"
+            className="inline-block rounded-lg bg-white px-6 py-3 font-semibold text-orange-600 shadow transition hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-300"
           >
             {t(locale, 'nav.blog')} →
           </Link>
@@ -59,7 +59,7 @@ export default function Home({ params }: { params: { locale: string } }) {
             <Link
               key={p.slug}
               href={`/${locale}/blog/${p.slug}/`}
-              className="group rounded-xl border border-gray-200 p-6 transition hover:border-orange-400 hover:shadow-md dark:border-gray-800 dark:bg-gray-900"
+              className="group rounded-xl border border-gray-200 p-6 transition duration-200 hover:-translate-y-1 hover:border-orange-400 hover:shadow-md dark:border-gray-800 dark:bg-gray-900"
             >
               <h3 className="text-lg font-semibold text-gray-900 group-hover:text-orange-500 dark:text-white">{p.title}</h3>
               <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">{p.date}</p>

@@ -181,3 +181,13 @@
     scroll-behavior: auto !important;
   }
 }
+
+/* Плавное появление выпадающих меню (язык) */
+@keyframes dropdownIn {
+  from { opacity: 0; transform: translateY(-4px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.dropdown-in {
+  animation: dropdownIn 0.14s ease-out;
+  transform-origin: top right;
+}

@@ -46,7 +46,7 @@ export default function BlogIndex({ params }: { params: { locale: string } }) {
           <Link
             key={p.slug}
             href={`/${locale}/blog/${p.slug}/`}
-            className="group rounded-xl border border-gray-200 p-6 transition hover:border-orange-400 hover:shadow-md dark:border-gray-800 dark:bg-gray-900"
+            className="group rounded-xl border border-gray-200 p-6 transition duration-200 hover:-translate-y-1 hover:border-orange-400 hover:shadow-md dark:border-gray-800 dark:bg-gray-900"
           >
             <h2 className="text-xl font-semibold text-gray-900 group-hover:text-orange-500 dark:text-white">
               {p.title}

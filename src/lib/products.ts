@@ -11,7 +11,7 @@ export type Product = {
 // Checkout для прямой продажи на сайте (Stripe / Lemon Squeezy / Paddle и т.п.).
 // Задай NEXT_PUBLIC_CHECKOUT_URL при сборке, либо захардкожь ниже.
 export const CHECKOUT_URL =
-  process.env.NEXT_PUBLIC_CHECKOUT_URL || 'https://checkout.example.com/ffl';
+  process.env.NEXT_PUBLIC_CHECKOUT_URL || 'REPLACE_WITH_PAYONEER_CHECKOUT';
 
 // Добавь сюда товары — компонент BookCard отрисует их сам.
 export const PRODUCTS: Product[] = [
@@ -34,8 +34,8 @@ export const PRODUCTS: Product[] = [
     },
   },
   {
-    asin: 'HARDCOVER_ASIN',
-    amazonUrl: 'https://www.amazon.com/dp/HARDCOVER_ASIN',
+    asin: 'B0H6VSF6S6',
+    amazonUrl: 'https://www.amazon.com/dp/B0H6VSF6S6',
     price: '$24.99',
     cover: '/ffl-acquisition-and-disposition-book/images/ffl-book-cover-hc.jpg',
     format: 'hardcover',

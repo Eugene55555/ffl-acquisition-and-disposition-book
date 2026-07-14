@@ -3,47 +3,37 @@
 import { useEffect, useRef } from 'react';
 import { type Locale } from '@/src/i18n/settings';
 
-// Giscus — статик-френдли комментарии на базе GitHub Discussions.
-// Значения по умолчанию — твой репозиторий. Переопредели через
-// NEXT_PUBLIC_GISCUS_* при сборке, если нужно сменить.
-const DEFAULT_REPO = 'Eugene55555/ffl-acquisition-and-disposition-book';
-const DEFAULT_REPO_ID = 'R_kgDOTXuLwA';
-const DEFAULT_CATEGORY = 'Announcements';
-const DEFAULT_CATEGORY_ID = 'DIC_kwDOTXuLwM4DBMPA';
+// Disqus — универсальные комментарии (гостевой вход + Google/Facebook).
+// Задай NEXT_PUBLIC_DISQUS_SHORTNAME или захардкожь ниже.
+const SHORTNAME = process.env.NEXT_PUBLIC_DISQUS_SHORTNAME || 'ffl';
 
 export function Comments({ locale }: { locale: Locale }) {
   const ref = useRef<HTMLDivElement>(null);
-  const repo = process.env.NEXT_PUBLIC_GISCUS_REPO || DEFAULT_REPO;
-  const repoId = process.env.NEXT_PUBLIC_GISCUS_REPO_ID || DEFAULT_REPO_ID;
-  const category = process.env.NEXT_PUBLIC_GISCUS_CATEGORY || DEFAULT_CATEGORY;
-  const categoryId = process.env.NEXT_PUBLIC_GISCUS_CATEGORY_ID || DEFAULT_CATEGORY_ID;
 
   useEffect(() => {
-    if (!ref.current) return;
+    if (!SHORTNAME || !ref.current) return;
+    const w = window as unknown as {
+      disqus_config?: () => void;
+      DISQUS?: unknown;
+    };
+    w.disqus_config = function (this: { page: { identifier: string; url: string; language: string } }) {
+      this.page.identifier = window.location.pathname;
+      this.page.url = window.location.href;
+      this.page.language = locale;
+    };
     const s = document.createElement('script');
-    s.src = 'https://giscus.app/client.js';
+    s.src = `https://${SHORTNAME}.disqus.com/embed.js`;
     s.async = true;
-    s.crossOrigin = 'anonymous';
-    s.setAttribute('data-repo', repo);
-    s.setAttribute('data-repo-id', repoId);
-    s.setAttribute('data-category', category);
-    s.setAttribute('data-category-id', categoryId);
-    s.setAttribute('data-mapping', 'pathname');
-    s.setAttribute('data-strict', '0');
-    s.setAttribute('data-reactions-enabled', '1');
-    s.setAttribute('data-emit-metadata', '0');
-    s.setAttribute('data-input-position', 'bottom');
-    s.setAttribute('data-theme', 'preferred_color_scheme');
-    s.setAttribute('data-lang', locale);
-    s.setAttribute('data-loading', 'lazy');
+    s.setAttribute('data-timestamp', String(Date.now()));
     ref.current.appendChild(s);
-  }, [repo, repoId, category, categoryId, locale]);
+  }, [locale]);
 
+  if (!SHORTNAME) return null;
   return (
     <div className="mt-12">
-      <div ref={ref} />
+      <div id="disqus_thread" ref={ref} />
       <p className="mt-3 text-center text-xs text-gray-400 dark:text-gray-500">
-        Sign in with GitHub to comment.
+        Comments powered by Disqus.
       </p>
     </div>
   );

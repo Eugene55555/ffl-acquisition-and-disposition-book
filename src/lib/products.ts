@@ -32,7 +32,7 @@ export const PRODUCTS: Product[] = [
   {
     asin: 'B0H6VSF6S6',
     amazonUrl: 'https://www.amazon.com/dp/B0H6VSF6S6',
-    price: '$24.99',
+    price: '$20.99',
     cover: '/ffl-acquisition-and-disposition-book/images/ffl-book-cover-hc.jpg',
     format: 'hardcover',
     en: {

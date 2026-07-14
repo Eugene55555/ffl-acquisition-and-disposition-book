@@ -28,15 +28,18 @@ export function BookCard({ locale }: { locale: Locale }) {
                 </span>
                 <h2 className="mt-3 text-2xl font-bold text-gray-900 dark:text-white">{c.title}</h2>
                 <p className="mt-3 text-gray-600 dark:text-gray-300">{c.blurb}</p>
-                <div className="mt-6 flex flex-col items-center gap-3 sm:items-start">
+                <div className="mt-6 flex flex-col items-center gap-2 sm:items-start">
                   <a
                     href={p.amazonUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-block rounded-lg bg-[linear-gradient(to_right,#FF512F,#F09819)] px-7 py-3 font-semibold text-white shadow hover:opacity-90"
                   >
-                    {c.buy} — {p.price}
+                    {c.buy}
                   </a>
+                  <span className="text-sm text-gray-500 dark:text-gray-400">
+                    {p.price}
+                  </span>
                 </div>
               </div>
             </div>

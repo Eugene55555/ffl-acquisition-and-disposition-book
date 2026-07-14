@@ -4,23 +4,29 @@ import { useEffect, useRef } from 'react';
 import { type Locale } from '@/src/i18n/settings';
 
 // Giscus — статик-френдли комментарии на базе GitHub Discussions.
-// Включи, задав переменные окружения при сборке (repo, repo-id, category-id).
-// Если не заданы — компонент просто ничего не рендерит.
+// Значения по умолчанию — твой репозиторий. Переопредели через
+// NEXT_PUBLIC_GISCUS_* при сборке, если нужно сменить.
+const DEFAULT_REPO = 'Eugene55555/ffl-acquisition-and-disposition-book';
+const DEFAULT_REPO_ID = 'R_kgDOTXuLwA';
+const DEFAULT_CATEGORY = 'Announcements';
+const DEFAULT_CATEGORY_ID = 'DIC_kwDOTXuLwM4DBMPA';
+
 export function Comments({ locale }: { locale: Locale }) {
   const ref = useRef<HTMLDivElement>(null);
-  const repo = process.env.NEXT_PUBLIC_GISCUS_REPO;
-  const repoId = process.env.NEXT_PUBLIC_GISCUS_REPO_ID;
-  const categoryId = process.env.NEXT_PUBLIC_GISCUS_CATEGORY_ID;
+  const repo = process.env.NEXT_PUBLIC_GISCUS_REPO || DEFAULT_REPO;
+  const repoId = process.env.NEXT_PUBLIC_GISCUS_REPO_ID || DEFAULT_REPO_ID;
+  const category = process.env.NEXT_PUBLIC_GISCUS_CATEGORY || DEFAULT_CATEGORY;
+  const categoryId = process.env.NEXT_PUBLIC_GISCUS_CATEGORY_ID || DEFAULT_CATEGORY_ID;
 
   useEffect(() => {
-    if (!repo || !repoId || !categoryId || !ref.current) return;
+    if (!ref.current) return;
     const s = document.createElement('script');
     s.src = 'https://giscus.app/client.js';
     s.async = true;
     s.crossOrigin = 'anonymous';
     s.setAttribute('data-repo', repo);
     s.setAttribute('data-repo-id', repoId);
-    s.setAttribute('data-category', 'Comments');
+    s.setAttribute('data-category', category);
     s.setAttribute('data-category-id', categoryId);
     s.setAttribute('data-mapping', 'pathname');
     s.setAttribute('data-strict', '0');
@@ -31,8 +37,7 @@ export function Comments({ locale }: { locale: Locale }) {
     s.setAttribute('data-lang', locale);
     s.setAttribute('data-loading', 'lazy');
     ref.current.appendChild(s);
-  }, [repo, repoId, categoryId, locale]);
+  }, [repo, repoId, category, categoryId, locale]);
 
-  if (!repo || !repoId || !categoryId) return null;
   return <div ref={ref} className="mt-12" />;
 }

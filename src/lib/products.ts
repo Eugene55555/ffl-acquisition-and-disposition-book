@@ -8,10 +8,6 @@ export type Product = {
   ru: { title: string; blurb: string; buy: string };
 };
 
-// Checkout для прямой продажи на сайте (Stripe / Lemon Squeezy / Paddle и т.п.).
-// Задай NEXT_PUBLIC_CHECKOUT_URL при сборке, либо захардкожь ниже.
-export const CHECKOUT_URL =
-  process.env.NEXT_PUBLIC_CHECKOUT_URL || 'REPLACE_WITH_PAYONEER_CHECKOUT';
 
 // Добавь сюда товары — компонент BookCard отрисует их сам.
 export const PRODUCTS: Product[] = [

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 
 function SunIcon() {
   return (
@@ -19,11 +19,29 @@ function MoonIcon() {
   );
 }
 
+// Применяет тему к <html> сразу при маунте (до отрисовки), перекрывая
+// то, что могло стереться при гидрации React (он восстанавливает серверный className).
+function applyTheme() {
+  try {
+    const t = localStorage.getItem('theme');
+    const dark = t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    document.documentElement.classList.toggle('dark', dark);
+    return dark;
+  } catch {
+    return false;
+  }
+}
+
 export function ThemeToggle() {
   const [dark, setDark] = useState(false);
 
+  // useLayoutEffect — синхронно до paint, фиксит класс после гидрации.
+  useLayoutEffect(() => {
+    setDark(applyTheme());
+  }, []);
+
   useEffect(() => {
-    setDark(document.documentElement.classList.contains('dark'));
+    setDark(applyTheme());
   }, []);
 
   function toggle() {

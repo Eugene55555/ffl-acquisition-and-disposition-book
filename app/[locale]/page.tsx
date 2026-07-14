@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { t } from '@/src/i18n/ui';
 import { locales, type Locale } from '@/src/i18n/settings';
 import { getAllPosts } from '@/src/lib/posts';
+import { BookCard } from '@/components/BookCard';
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -22,6 +23,8 @@ export default function Home({ params }: { params: { locale: string } }) {
           {t(locale, 'nav.blog')} →
         </Link>
       </section>
+
+      <BookCard locale={locale} />
 
       <section>
         <h2 className="mb-6 text-2xl font-bold text-gray-900">{t(locale, 'home.latest')}</h2>

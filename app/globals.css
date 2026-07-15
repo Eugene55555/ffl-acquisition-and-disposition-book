@@ -191,3 +191,23 @@
   animation: dropdownIn 0.14s ease-out;
   transform-origin: top right;
 }
+
+/* === Cusdis: профессиональный вид + адаптив + без полос прокрутки === */
+.cusdis-wrapper {
+  width: 100%;
+}
+.cusdis-wrapper iframe {
+  display: block;
+  width: 100% !important;
+  min-width: 0;          /* не даёт iframe «распирать» контейнер на узких экранах */
+  border: 0 !important;
+  overflow: hidden !important;
+  scrollbar-width: none !important;   /* Firefox */
+}
+.cusdis-wrapper iframe::-webkit-scrollbar {
+  display: none !important;            /* WebKit */
+}
+/* В тёмной теме — лёгкая «стеклянная» рамка вокруг формы */
+.dark .cusdis-wrapper {
+  background: var(--color-neutral-900);
+}

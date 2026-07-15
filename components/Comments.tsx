@@ -21,19 +21,49 @@ export function Comments({ locale }: { locale: Locale }) {
     el.setAttribute('data-page-url', window.location.href);
     el.setAttribute('data-page-title', document.title);
     el.setAttribute('data-lang', locale);
-    const s = document.createElement('script');
-    s.src = `${CUSDIS_HOST}/js/cusdis.es.js`;
-    s.async = true;
-    el.appendChild(s);
+
+    // Скрываем полосу прокрутки у iframe Cusdis (у iframe нет рамки, авто-высота).
+    const styleId = 'cusdis-no-scrollbar';
+    if (!document.getElementById(styleId)) {
+      const s = document.createElement('style');
+      s.id = styleId;
+      s.textContent = `
+        #cusdis_thread { overflow: hidden !important; }
+        #cusdis_thread iframe {
+          border: 0 !important;
+          width: 100% !important;
+          overflow: hidden !important;
+          scrollbar-width: none !important;
+        }
+        #cusdis_thread iframe::-webkit-scrollbar { display: none !important; }
+      `;
+      document.head.appendChild(s);
+    }
+
+    const script = document.createElement('script');
+    script.src = `${CUSDIS_HOST}/js/cusdis.es.js`;
+    script.async = true;
+    el.appendChild(script);
   }, [locale]);
 
   if (!CUSDIS_APP_ID) return null;
   return (
-    <div className="mt-12">
-      <div ref={ref} />
-      <p className="mt-3 text-center text-xs text-gray-400 dark:text-gray-500">
-        Comments powered by Cusdis.
-      </p>
-    </div>
+    <section className="mt-16 border-t border-orange-100 pt-10">
+      <div className="mx-auto max-w-3xl px-4">
+        <h2 className="mb-2 text-center text-2xl font-bold tracking-tight text-neutral-900 font-serif md:text-3xl">
+          Comments
+        </h2>
+        <p className="mb-6 text-center text-sm text-neutral-500">
+          Share your thoughts — join the conversation below.
+        </p>
+        <div
+          ref={ref}
+          className="overflow-hidden rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm"
+        />
+        <p className="mt-3 text-center text-xs text-gray-400 dark:text-gray-500">
+          Comments powered by Cusdis.
+        </p>
+      </div>
+    </section>
   );
 }

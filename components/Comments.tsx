@@ -62,11 +62,14 @@ export function Comments({ locale }: { locale: Locale }) {
 
           // Тема внутри iframe: Cusdis жёстко ставит class="dark" на корень.
           // Синхронизируем с темой сайта, чтобы в светлой теме форма была светлой.
-          const rootInner = doc.querySelector('#root > div') || doc.body.firstElementChild;
-          if (rootInner) {
-            const siteDark = document.documentElement.classList.contains('dark');
-            rootInner.classList.toggle('dark', siteDark);
-          }
+          const syncTheme = () => {
+            const rootDiv = doc.querySelector('#root > div');
+            if (rootDiv) {
+              const siteDark = document.documentElement.classList.contains('dark');
+              rootDiv.classList.toggle('dark', siteDark);
+            }
+          };
+          syncTheme();
 
           // 2) прячем всплывающие баннеры (soon / approval / sent / etc.)
           // 3) после отправки — очищаем поля формы, чтобы можно было писать снова.
@@ -76,18 +79,19 @@ export function Comments({ locale }: { locale: Locale }) {
               const t = (node.textContent || '').trim();
               if (t && t.length < 160 && HIDE_TEXT_RE.test(t) && node.children.length <= 2) {
                 node.style.display = 'none';
-                // если это сообщение об отправке — сбросим форму
                 if (/sent|approval|wait for approval/i.test(t)) {
                   const form = doc.querySelector('form');
-                  if (form) form.reset();
-                  const inputs = doc.querySelectorAll('input, textarea');
-                  inputs.forEach((i) => ((i as HTMLInputElement).value = ''));
+                  if (form) (form as HTMLFormElement).reset();
+                  doc.querySelectorAll('input, textarea').forEach((i) => {
+                    (i as HTMLInputElement).value = '';
+                  });
                 }
               }
             }
             applyHeight();
           };
 
+          // MutationObserver ловит динамические баннеры
           const RO = ifr.contentWindow && (ifr.contentWindow as unknown as {
             MutationObserver?: typeof MutationObserver;
           }).MutationObserver;
@@ -95,6 +99,9 @@ export function Comments({ locale }: { locale: Locale }) {
             const mo = new RO(cleanup);
             mo.observe(doc.body, { childList: true, subtree: true });
           }
+          // Fallback на случай, если observer не сработал
+          const iv = setInterval(cleanup, 500);
+          setTimeout(() => clearInterval(iv), 15000);
           cleanup();
         } catch {
           /* ignore */

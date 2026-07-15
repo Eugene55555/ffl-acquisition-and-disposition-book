@@ -3,37 +3,36 @@
 import { useEffect, useRef } from 'react';
 import { type Locale } from '@/src/i18n/settings';
 
-// Disqus — универсальные комментарии (гостевой вход + Google/Facebook).
-// Задай NEXT_PUBLIC_DISQUS_SHORTNAME или захардкожь ниже.
-const SHORTNAME = process.env.NEXT_PUBLIC_DISQUS_SHORTNAME || 'ffl-test';
+// Cusdis — бесплатный open-source комментарий-сервис.
+// https://cusdis.com — проект Eugene55555.
+const CUSDIS_APP_ID = process.env.NEXT_PUBLIC_CUSDIS_APP_ID || '88e9de72-f907-4d0b-9aa4-bbbecc2a991a';
+const CUSDIS_HOST = process.env.NEXT_PUBLIC_CUSDIS_HOST || 'https://cusdis.com';
 
 export function Comments({ locale }: { locale: Locale }) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!SHORTNAME || !ref.current) return;
-    const w = window as unknown as {
-      disqus_config?: () => void;
-      DISQUS?: unknown;
-    };
-    w.disqus_config = function (this: { page: { identifier: string; url: string; language: string } }) {
-      this.page.identifier = window.location.pathname;
-      this.page.url = window.location.href;
-      this.page.language = locale;
-    };
+    if (!CUSDIS_APP_ID || !ref.current) return;
+    const el = ref.current;
+    el.setAttribute('id', 'cusdis_thread');
+    el.setAttribute('data-host', CUSDIS_HOST);
+    el.setAttribute('data-app-id', CUSDIS_APP_ID);
+    el.setAttribute('data-page-id', window.location.pathname);
+    el.setAttribute('data-page-url', window.location.href);
+    el.setAttribute('data-page-title', document.title);
+    el.setAttribute('data-lang', locale);
     const s = document.createElement('script');
-    s.src = `https://${SHORTNAME}.disqus.com/embed.js`;
+    s.src = `${CUSDIS_HOST}/js/cusdis.es.js`;
     s.async = true;
-    s.setAttribute('data-timestamp', String(Date.now()));
-    ref.current.appendChild(s);
+    el.appendChild(s);
   }, [locale]);
 
-  if (!SHORTNAME) return null;
+  if (!CUSDIS_APP_ID) return null;
   return (
     <div className="mt-12">
-      <div id="disqus_thread" ref={ref} />
+      <div ref={ref} />
       <p className="mt-3 text-center text-xs text-gray-400 dark:text-gray-500">
-        Comments powered by Disqus.
+        Comments powered by Cusdis.
       </p>
     </div>
   );

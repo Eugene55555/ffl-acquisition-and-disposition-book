@@ -24,7 +24,7 @@ function Chevron() {
 export function Breadcrumbs({ locale, items }: { locale: Locale; items: Crumb[] }) {
   return (
     <nav aria-label="Breadcrumb">
-      <ol className="flex flex-wrap items-center gap-1 rounded-full border border-gray-200 bg-gray-50 px-3 py-1.5 text-sm dark:border-gray-800 dark:bg-gray-900">
+      <ol className="no-scrollbar flex max-w-full items-center gap-1 overflow-x-auto whitespace-nowrap rounded-full border border-gray-200 bg-gray-50 px-3 py-1.5 text-sm dark:border-gray-800 dark:bg-gray-900">
         <li>
           <Link
             href={`/${locale}/`}

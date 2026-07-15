@@ -70,6 +70,7 @@ export function Header({ locale }: { locale: Locale }) {
     }`;
 
   return (
+    <>
     <header className="sticky top-0 z-50 w-full border-b border-gray-200 bg-white/80 backdrop-blur dark:border-gray-800 dark:bg-gray-950/80">
       <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
         <Link href={`/${locale}/`} className="flex items-center gap-2" aria-label="Home">
@@ -109,38 +110,39 @@ export function Header({ locale }: { locale: Locale }) {
           </button>
         </div>
       </div>
-
-      {/* Mobile menu */}
-      {open && (
-        <>
-          {/* Затемняющий оверлей: клик вне меню закрывает его */}
-          <div
-            className="fixed inset-0 z-40 bg-black/40 md:hidden"
-            onClick={() => setOpen(false)}
-            aria-hidden="true"
-          />
-          <div className="relative z-50 border-t border-gray-200 px-4 py-3 md:hidden dark:border-gray-800">
-            <nav className="flex flex-col gap-1">
-              {NAV.map((item) => (
-                <Link
-                  key={item.key}
-                  href={`/${locale}${item.href}`}
-                  onClick={() => setOpen(false)}
-                  aria-current={isActive(item.href) ? 'page' : undefined}
-                  className={linkClass(item.href)}
-                >
-                  {t(locale, item.key)}
-                </Link>
-              ))}
-            </nav>
-            <div className="mt-3 flex items-center justify-end gap-2 border-t border-gray-200 pt-3 dark:border-gray-800">
-              <ThemeToggle />
-              <LanguageSwitcher locale={locale} />
-            </div>
-          </div>
-        </>
-      )}
     </header>
+
+    {/* Mobile menu — ВНЕ <header>, чтобы fixed inset-0 цеплял вьюпорт, а не шапку (backdrop-blur создаёт containing block) */}
+    {open && (
+      <>
+        {/* Затемняющий оверлей на весь экран: клик вне меню закрывает его */}
+        <div
+          className="fixed inset-0 z-40 bg-black/40 md:hidden"
+          onClick={() => setOpen(false)}
+          aria-hidden="true"
+        />
+        <div className="absolute inset-x-0 top-14 z-50 border-t border-gray-200 bg-white px-4 py-3 md:hidden dark:border-gray-800 dark:bg-gray-950">
+          <nav className="flex flex-col gap-1">
+            {NAV.map((item) => (
+              <Link
+                key={item.key}
+                href={`/${locale}${item.href}`}
+                onClick={() => setOpen(false)}
+                aria-current={isActive(item.href) ? 'page' : undefined}
+                className={linkClass(item.href)}
+              >
+                {t(locale, item.key)}
+              </Link>
+            ))}
+          </nav>
+          <div className="mt-3 flex items-center justify-end gap-2 border-t border-gray-200 pt-3 dark:border-gray-800">
+            <ThemeToggle />
+            <LanguageSwitcher locale={locale} />
+          </div>
+        </div>
+      </>
+    )}
+    </>
   );
 }
 

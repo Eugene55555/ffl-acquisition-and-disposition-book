@@ -43,8 +43,36 @@ export function Comments({ locale }: { locale: Locale }) {
             const s = doc.createElement('style');
             s.id = 'cusdis-inner-fix';
             s.textContent =
-              'html,body,#root,#root > div{background:transparent !important;}';
+              'html,body,#root,#root > div{background:transparent !important;}\n' +
+              /* 3) убрать "Comments powered by Cusdis" */
+              'a[href*="cusdis.com"]{display:none !important;}\n' +
+              /* 5) на мобильных имя и email — в 2 строки (1 колонка) */
+              '@media (max-width:640px){ .grid-cols-2{grid-template-columns:1fr !important;} }\n' +
+              /* 4) textarea не меньше ~2 строк (line-height) */
+              'textarea{min-height:3.5rem !important;}\n' +
+              /* убрать фокус-аутлайны внутри */
+              '*:focus{outline:none !important;}';
             doc.head.appendChild(s);
+
+            /* 2) скрывать всплывающие сообщения "скоро/выкл/moderation" */
+            const hideFlash = () => {
+              const all = Array.from(doc.querySelectorAll<HTMLElement>('*'));
+              for (const el of all) {
+                const t = (el.textContent || '').toLowerCase();
+                const withText =
+                  /soon|turn off|turned off|will be|awaiting|moderat|выкл|скоро|откл/.test(t) &&
+                  t.length < 120;
+                const hasButton = el.querySelector('button, a');
+                if (withText && !hasButton && el.children.length <= 1) {
+                  el.style.display = 'none';
+                }
+              }
+            };
+            const mo = new (ifr.contentWindow as unknown as {
+              MutationObserver: typeof MutationObserver;
+            }).MutationObserver(hideFlash);
+            mo.observe(doc.body, { childList: true, subtree: true });
+            hideFlash();
           }
         } catch {
           /* ignore */
@@ -138,14 +166,13 @@ export function Comments({ locale }: { locale: Locale }) {
         <p className="mb-6 text-center text-sm text-neutral-500 dark:text-neutral-400">
           Share your thoughts — join the conversation below.
         </p>
-        {/* Обёртка: фон совпадает со страницей (white / gray-950) -> единый цвет */}
+        {/* Обёртка: фон совпадает со страницей (white / gray-950) -> единый цвет.
+            Без бордера и аутлайна (п.1). */}
         <div
           ref={ref}
-          className="cusdis-wrapper min-w-0 overflow-hidden rounded-2xl border border-neutral-200 bg-white p-4 shadow-sm sm:p-5 dark:border-neutral-800 dark:bg-gray-950"
+          className="cusdis-wrapper min-w-0 overflow-hidden rounded-2xl bg-white p-4 shadow-sm outline-none focus:outline-none sm:p-5 dark:bg-gray-950"
         />
-        <p className="mt-3 text-center text-xs text-gray-400 dark:text-gray-500">
-          Comments powered by Cusdis.
-        </p>
+        {/* п.3: подпись "powered by Cusdis" убрана намеренно */}
       </div>
     </section>
   );

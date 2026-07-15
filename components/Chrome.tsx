@@ -35,8 +35,15 @@ function useMobileMenu() {
     function onResize() {
       if (window.innerWidth >= 768) setOpen(false);
     }
+    function onKey(e: KeyboardEvent) {
+      if (e.key === 'Escape') setOpen(false);
+    }
     window.addEventListener('resize', onResize);
-    return () => window.removeEventListener('resize', onResize);
+    window.addEventListener('keydown', onKey);
+    return () => {
+      window.removeEventListener('resize', onResize);
+      window.removeEventListener('keydown', onKey);
+    };
   }, []);
   return [open, setOpen] as const;
 }
@@ -105,25 +112,33 @@ export function Header({ locale }: { locale: Locale }) {
 
       {/* Mobile menu */}
       {open && (
-        <div className="border-t border-gray-200 px-4 py-3 md:hidden dark:border-gray-800">
-          <nav className="flex flex-col gap-1">
-            {NAV.map((item) => (
-              <Link
-                key={item.key}
-                href={`/${locale}${item.href}`}
-                onClick={() => setOpen(false)}
-                aria-current={isActive(item.href) ? 'page' : undefined}
-                className={linkClass(item.href)}
-              >
-                {t(locale, item.key)}
-              </Link>
-            ))}
-          </nav>
-          <div className="mt-3 flex items-center justify-end gap-2 border-t border-gray-200 pt-3 dark:border-gray-800">
-            <ThemeToggle />
-            <LanguageSwitcher locale={locale} />
+        <>
+          {/* Затемняющий оверлей: клик вне меню закрывает его */}
+          <div
+            className="fixed inset-0 z-40 bg-black/40 md:hidden"
+            onClick={() => setOpen(false)}
+            aria-hidden="true"
+          />
+          <div className="relative z-50 border-t border-gray-200 px-4 py-3 md:hidden dark:border-gray-800">
+            <nav className="flex flex-col gap-1">
+              {NAV.map((item) => (
+                <Link
+                  key={item.key}
+                  href={`/${locale}${item.href}`}
+                  onClick={() => setOpen(false)}
+                  aria-current={isActive(item.href) ? 'page' : undefined}
+                  className={linkClass(item.href)}
+                >
+                  {t(locale, item.key)}
+                </Link>
+              ))}
+            </nav>
+            <div className="mt-3 flex items-center justify-end gap-2 border-t border-gray-200 pt-3 dark:border-gray-800">
+              <ThemeToggle />
+              <LanguageSwitcher locale={locale} />
+            </div>
           </div>
-        </div>
+        </>
       )}
     </header>
   );

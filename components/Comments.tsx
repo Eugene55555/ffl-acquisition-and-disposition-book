@@ -62,8 +62,8 @@ export function Comments({ locale }: { locale: Locale }) {
                 const withText =
                   /soon|turn off|turned off|will be|awaiting|moderat|выкл|скоро|откл/.test(t) &&
                   t.length < 120;
-                const hasButton = el.querySelector('button, a');
-                if (withText && !hasButton && el.children.length <= 1) {
+                const isSmall = el.children.length <= 2;
+                if (withText && isSmall) {
                   el.style.display = 'none';
                 }
               }

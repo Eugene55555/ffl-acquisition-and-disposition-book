@@ -5,7 +5,7 @@ import { type Locale } from '@/src/i18n/settings';
 
 // Disqus — универсальные комментарии (гостевой вход + Google/Facebook).
 // Задай NEXT_PUBLIC_DISQUS_SHORTNAME или захардкожь ниже.
-const SHORTNAME = process.env.NEXT_PUBLIC_DISQUS_SHORTNAME || 'ffl';
+const SHORTNAME = process.env.NEXT_PUBLIC_DISQUS_SHORTNAME || 'ffl-1';
 
 export function Comments({ locale }: { locale: Locale }) {
   const ref = useRef<HTMLDivElement>(null);

@@ -196,13 +196,12 @@
 .cusdis-wrapper {
   width: 100%;
 }
-/* iframe сам растёт под контент (высота задаётся JS), рамки/скроллбара снаружи нет */
 .cusdis-wrapper iframe {
   display: block;
   width: 100% !important;
-  min-width: 0;          /* не даёт iframe «распирать» контейнер на узких экранах */
+  min-width: 0;
   border: 0 !important;
-  scrollbar-width: none !important;   /* Firefox */
+  scrollbar-width: none !important;
 }
 .cusdis-wrapper iframe::-webkit-scrollbar {
   display: none !important;            /* WebKit */

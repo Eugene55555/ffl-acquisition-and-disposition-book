@@ -9,13 +9,17 @@ import { type Locale } from '@/src/i18n/settings';
 const CUSDIS_APP_ID = process.env.NEXT_PUBLIC_CUSDIS_APP_ID || '88e9de72-f907-4d0b-9aa4-bbbecc2a991a';
 const CUSDIS_HOST = process.env.NEXT_PUBLIC_CUSDIS_HOST || 'https://cusdis.com';
 
+// Тексты, которые Cusdis показывает во всплывающих баннерах (надо прятать).
+const HIDE_TEXT_RE =
+  /soon|turn off|turned off|will be|awaiting|approval|wait for approval|has been sent|moderat|выкл|скоро|откл|одобр/i;
+
 export function Comments({ locale }: { locale: Locale }) {
   const ref = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
 
   // 1) Рендер/перерендер Cusdis при смене поста (SPA-навигация) и локали.
   // 2) iframe растёт под контент (без «окна» и прокрутки).
-  // 3) Внутренний фон делаем прозрачным -> наследует фон обёртки (единый цвет).
+  // 3) Внутренний фон прозрачный -> наследует фон обёртки (единый цвет).
   useEffect(() => {
     if (!CUSDIS_APP_ID || !ref.current) return;
     const el = ref.current;
@@ -32,14 +36,15 @@ export function Comments({ locale }: { locale: Locale }) {
             ifr.style.height = doc.documentElement.scrollHeight + 'px';
           }
         } catch {
-          /* cross-origin — не должно быть, т.к. srcdoc same-origin */
+          /* ignore */
         }
       };
 
       const injectInnerFix = () => {
         try {
           const doc = ifr.contentDocument;
-          if (doc && doc.head && !doc.getElementById('cusdis-inner-fix')) {
+          if (!doc || !doc.head) return;
+          if (!doc.getElementById('cusdis-inner-fix')) {
             const s = doc.createElement('style');
             s.id = 'cusdis-inner-fix';
             s.textContent =
@@ -53,27 +58,44 @@ export function Comments({ locale }: { locale: Locale }) {
               /* убрать фокус-аутлайны внутри */
               '*:focus{outline:none !important;}';
             doc.head.appendChild(s);
+          }
 
-            /* 2) скрывать всплывающие сообщения "скоро/выкл/moderation" */
-            const hideFlash = () => {
-              const all = Array.from(doc.querySelectorAll<HTMLElement>('*'));
-              for (const el of all) {
-                const t = (el.textContent || '').toLowerCase();
-                const withText =
-                  /soon|turn off|turned off|will be|awaiting|moderat|выкл|скоро|откл/.test(t) &&
-                  t.length < 120;
-                const isSmall = el.children.length <= 2;
-                if (withText && isSmall) {
-                  el.style.display = 'none';
+          // Тема внутри iframe: Cusdis жёстко ставит class="dark" на корень.
+          // Синхронизируем с темой сайта, чтобы в светлой теме форма была светлой.
+          const rootInner = doc.querySelector('#root > div') || doc.body.firstElementChild;
+          if (rootInner) {
+            const siteDark = document.documentElement.classList.contains('dark');
+            rootInner.classList.toggle('dark', siteDark);
+          }
+
+          // 2) прячем всплывающие баннеры (soon / approval / sent / etc.)
+          // 3) после отправки — очищаем поля формы, чтобы можно было писать снова.
+          const cleanup = () => {
+            const all = Array.from(doc.querySelectorAll<HTMLElement>('*'));
+            for (const node of all) {
+              const t = (node.textContent || '').trim();
+              if (t && t.length < 160 && HIDE_TEXT_RE.test(t) && node.children.length <= 2) {
+                node.style.display = 'none';
+                // если это сообщение об отправке — сбросим форму
+                if (/sent|approval|wait for approval/i.test(t)) {
+                  const form = doc.querySelector('form');
+                  if (form) form.reset();
+                  const inputs = doc.querySelectorAll('input, textarea');
+                  inputs.forEach((i) => ((i as HTMLInputElement).value = ''));
                 }
               }
-            };
-            const mo = new (ifr.contentWindow as unknown as {
-              MutationObserver: typeof MutationObserver;
-            }).MutationObserver(hideFlash);
+            }
+            applyHeight();
+          };
+
+          const RO = ifr.contentWindow && (ifr.contentWindow as unknown as {
+            MutationObserver?: typeof MutationObserver;
+          }).MutationObserver;
+          if (RO && doc.body) {
+            const mo = new RO(cleanup);
             mo.observe(doc.body, { childList: true, subtree: true });
-            hideFlash();
           }
+          cleanup();
         } catch {
           /* ignore */
         }
@@ -119,7 +141,6 @@ export function Comments({ locale }: { locale: Locale }) {
       const w = window as unknown as { renderCusdis?: (t: HTMLElement) => void };
       if (w.renderCusdis) {
         w.renderCusdis(node);
-        // iframe создаётся внутри renderCusdis -> подождём и подцепим
         setTimeout(wireIframe, 350);
       }
     };
@@ -147,6 +168,13 @@ export function Comments({ locale }: { locale: Locale }) {
         CUSDIS?: { setTheme?: (t: string) => void };
       };
       if (w.CUSDIS && w.CUSDIS.setTheme) w.CUSDIS.setTheme(dark ? 'dark' : 'light');
+      // синхронизируем class="dark" внутри iframe
+      const ifr = document.querySelector('.cusdis-wrapper iframe') as HTMLIFrameElement | null;
+      const doc = ifr && ifr.contentDocument;
+      if (doc) {
+        const rootInner = doc.querySelector('#root > div') || doc.body.firstElementChild;
+        if (rootInner) rootInner.classList.toggle('dark', dark);
+      }
     };
     const observer = new MutationObserver(applyTheme);
     observer.observe(document.documentElement, {
@@ -166,13 +194,11 @@ export function Comments({ locale }: { locale: Locale }) {
         <p className="mb-6 text-center text-sm text-neutral-500 dark:text-neutral-400">
           Share your thoughts — join the conversation below.
         </p>
-        {/* Обёртка: фон совпадает со страницей (white / gray-950) -> единый цвет.
-            Без бордера и аутлайна (п.1). */}
+        {/* Без бордера / аутлайна / тени вокруг блока (п.1) */}
         <div
           ref={ref}
-          className="cusdis-wrapper min-w-0 overflow-hidden rounded-2xl bg-white p-4 shadow-sm outline-none focus:outline-none sm:p-5 dark:bg-gray-950"
+          className="cusdis-wrapper min-w-0 overflow-hidden rounded-2xl bg-white p-4 outline-none focus:outline-none sm:p-5 dark:bg-gray-950"
         />
-        {/* п.3: подпись "powered by Cusdis" убрана намеренно */}
       </div>
     </section>
   );

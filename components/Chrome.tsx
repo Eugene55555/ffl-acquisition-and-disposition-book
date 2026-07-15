@@ -121,7 +121,7 @@ export function Header({ locale }: { locale: Locale }) {
           onClick={() => setOpen(false)}
           aria-hidden="true"
         />
-        <div className="absolute inset-x-0 top-14 z-50 border-t border-gray-200 bg-white px-4 py-3 md:hidden dark:border-gray-800 dark:bg-gray-950">
+        <div className="fixed inset-x-0 top-14 z-50 border-t border-gray-200 bg-white px-4 py-3 md:hidden dark:border-gray-800 dark:bg-gray-950">
           <nav className="flex flex-col gap-1">
             {NAV.map((item) => (
               <Link

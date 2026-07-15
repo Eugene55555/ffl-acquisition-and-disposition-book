@@ -60,10 +60,16 @@ export function Comments({ locale }: { locale: Locale }) {
             doc.head.appendChild(s);
           }
 
-          // Тема внутри iframe: Cusdis жёстко ставит class="dark" на корень.
-          // Синхронизируем с темой сайта, чтобы в светлой теме форма была светлой.
+          // Всю динамику запускаем ВНУТРИ контекста iframe (через contentWindow),
+          // иначе MutationObserver/setInterval работают в контексте родителя и не видят баннеры.
+          const cw = ifr.contentWindow as unknown as Window & {
+            MutationObserver?: typeof MutationObserver;
+            setInterval?: typeof setInterval;
+          };
+          if (!cw || !cw.document) return;
+
           const syncTheme = () => {
-            const rootDiv = doc.querySelector('#root > div');
+            const rootDiv = cw.document.querySelector('#root > div');
             if (rootDiv) {
               const siteDark = document.documentElement.classList.contains('dark');
               rootDiv.classList.toggle('dark', siteDark);
@@ -71,18 +77,16 @@ export function Comments({ locale }: { locale: Locale }) {
           };
           syncTheme();
 
-          // 2) прячем всплывающие баннеры (soon / approval / sent / etc.)
-          // 3) после отправки — очищаем поля формы, чтобы можно было писать снова.
           const cleanup = () => {
-            const all = Array.from(doc.querySelectorAll<HTMLElement>('*'));
+            const all = Array.from(cw.document.querySelectorAll<HTMLElement>('*'));
             for (const node of all) {
               const t = (node.textContent || '').trim();
               if (t && t.length < 160 && HIDE_TEXT_RE.test(t) && node.children.length <= 2) {
                 node.style.display = 'none';
                 if (/sent|approval|wait for approval/i.test(t)) {
-                  const form = doc.querySelector('form');
+                  const form = cw.document.querySelector('form');
                   if (form) (form as HTMLFormElement).reset();
-                  doc.querySelectorAll('input, textarea').forEach((i) => {
+                  cw.document.querySelectorAll('input, textarea').forEach((i) => {
                     (i as HTMLInputElement).value = '';
                   });
                 }
@@ -91,17 +95,14 @@ export function Comments({ locale }: { locale: Locale }) {
             applyHeight();
           };
 
-          // MutationObserver ловит динамические баннеры
-          const RO = ifr.contentWindow && (ifr.contentWindow as unknown as {
-            MutationObserver?: typeof MutationObserver;
-          }).MutationObserver;
-          if (RO && doc.body) {
-            const mo = new RO(cleanup);
-            mo.observe(doc.body, { childList: true, subtree: true });
+          if (cw.MutationObserver && cw.document.body) {
+            const mo = new cw.MutationObserver(cleanup);
+            mo.observe(cw.document.body, { childList: true, subtree: true });
           }
-          // Fallback на случай, если observer не сработал
-          const iv = setInterval(cleanup, 500);
-          setTimeout(() => clearInterval(iv), 15000);
+          if (cw.setInterval) {
+            const iv = cw.setInterval(cleanup, 500);
+            cw.setTimeout(() => cw.clearInterval!(iv), 20000);
+          }
           cleanup();
         } catch {
           /* ignore */
@@ -175,12 +176,13 @@ export function Comments({ locale }: { locale: Locale }) {
         CUSDIS?: { setTheme?: (t: string) => void };
       };
       if (w.CUSDIS && w.CUSDIS.setTheme) w.CUSDIS.setTheme(dark ? 'dark' : 'light');
-      // синхронизируем class="dark" внутри iframe
+      // синхронизируем class="dark" внутри iframe (через контекст фрейма)
       const ifr = document.querySelector('.cusdis-wrapper iframe') as HTMLIFrameElement | null;
-      const doc = ifr && ifr.contentDocument;
+      const cw = ifr && (ifr.contentWindow as unknown as Window | null);
+      const doc = cw && (cw.document as Document | null);
       if (doc) {
-        const rootInner = doc.querySelector('#root > div') || doc.body.firstElementChild;
-        if (rootInner) rootInner.classList.toggle('dark', dark);
+        const rootDiv = doc.querySelector('#root > div');
+        if (rootDiv) rootDiv.classList.toggle('dark', dark);
       }
     };
     const observer = new MutationObserver(applyTheme);

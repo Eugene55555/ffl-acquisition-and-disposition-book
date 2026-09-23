@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation';
 import { t } from '@/src/i18n/ui';
 import { locales, type Locale } from '@/src/i18n/settings';
 import { BOOKS, getBook, bookUrl, formatLabel, cheapestEdition, seriesLabel } from '@/src/lib/products';
-import { alternatesFor, OG_IMAGE } from '@/src/lib/seo';
+import { alternatesFor, absUrl } from '@/src/lib/seo';
 import { Reveal } from '@/components/Reveal';
 import { Parallax } from '@/components/Parallax';
 import { Comments } from '@/components/Comments';
@@ -27,7 +27,7 @@ export function generateMetadata({
   if (!book) return {};
   const text = book[locale];
   const desc = text.blurb.slice(0, 180);
-  const coverAbs = `${process.env.SITE_URL || 'https://eugene55555.github.io/ffl-acquisition-and-disposition-book'}${cheapestEdition(book).cover}`;
+  const ogImage = absUrl(`/og/${book.slug}-${locale}.jpg`);
   return {
     title: text.title,
     description: desc,
@@ -37,9 +37,9 @@ export function generateMetadata({
       description: desc,
       locale,
       type: 'website',
-      images: [coverAbs || OG_IMAGE[locale]],
+      images: [ogImage],
     },
-    twitter: { images: [coverAbs || OG_IMAGE[locale]] },
+    twitter: { images: [ogImage] },
   };
 }
 

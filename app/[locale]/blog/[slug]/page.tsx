@@ -11,6 +11,7 @@ import { RelatedPosts } from '@/components/RelatedPosts';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { Newsletter } from '@/components/Newsletter';
 import { Comments } from '@/components/Comments';
+import { Reveal } from '@/components/Reveal';
 import { alternatesFor, siteUrl, OG_IMAGE } from '@/src/lib/seo';
 
 export function generateStaticParams() {
@@ -35,7 +36,7 @@ export function generateMetadata({ params }: { params: { locale: string; slug: s
       type: 'article',
       title: post.title,
       description: post.description || post.content?.slice(0, 150),
-      locale: locale,
+      locale,
       publishedTime: post.date,
       images: [OG_IMAGE[locale]],
     },
@@ -61,48 +62,61 @@ export default async function PostPage({ params }: { params: { locale: string; s
   };
 
   return (
-    <div className="mx-auto max-w-5xl">
-      <div className="flex gap-10">
-        <article className="mx-auto w-full max-w-3xl">
-          <script
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-          />
-          <ReadingProgress />
-          <Breadcrumbs
-            locale={locale}
-            items={[{ label: t(locale, 'nav.blog'), href: `/${locale}/blog/` }, { label: post.title }]}
-          />
-          <h1 className="mt-2 text-4xl font-bold text-gray-900 dark:text-white">{post.title}</h1>
-          <p className="mt-3 text-sm text-gray-500">
-            {t(locale, 'post.published')}: {post.date}
-            {post.author ? ` · ${t(locale, 'post.by')} ${post.author}` : ''}
-            {post.readingTime ? ` · ${post.readingTime} ${locale === 'ru' ? 'чтения' : 'read'}` : ''}
-          </p>
-          {post.tags && post.tags.length > 0 && (
-            <div className="mt-4 flex flex-wrap gap-2">
-              {post.tags.map((tag) => (
-                <span key={tag} className="rounded-full bg-orange-50 px-3 py-1 text-xs text-orange-600 dark:bg-orange-500/10">
-                  #{tag}
-                </span>
-              ))}
-            </div>
-          )}
-          <div
-            className="prose prose-orange mt-8 max-w-none prose-headings:text-gray-900 prose-a:text-orange-500 dark:prose-headings:text-white dark:prose-invert"
-            dangerouslySetInnerHTML={{ __html: html }}
-          />
-          <ShareButtons locale={locale} title={post.title} />
-          <RelatedPosts
-            locale={locale}
-            current={post.slug}
-            all={getAllPosts(locale).map((p) => ({ slug: p.slug, title: p.title, tags: p.tags || [] }))}
-          />
-          <Newsletter locale={locale} />
-          <Comments locale={locale} />
-        </article>
-        <PostTOC locale={locale} />
-      </div>
+    <div>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <ReadingProgress />
+
+      <section className="relative overflow-hidden pb-10 pt-10">
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
+          <div className="absolute -top-40 right-1/4 h-[26rem] w-[26rem] animate-glow rounded-full bg-brand-500/10 blur-[120px]" />
+        </div>
+        <div className="shell">
+          <div className="flex gap-12">
+            <article className="mx-auto w-full max-w-3xl">
+              <Breadcrumbs
+                locale={locale}
+                items={[{ label: t(locale, 'nav.blog'), href: `/${locale}/blog/` }, { label: post.title }]}
+              />
+              <Reveal>
+                <h1 className="display mt-5 text-4xl text-sand-900 sm:text-5xl dark:text-sand-50">
+                  {post.title}
+                </h1>
+                <p className="mt-4 font-mono text-[11px] uppercase tracking-[0.16em] text-sand-400">
+                  {t(locale, 'post.published')}: {post.date}
+                  {post.author ? ` · ${t(locale, 'post.by')} ${post.author}` : ''}
+                  {post.readingTime ? ` · ${post.readingTime} ${locale === 'ru' ? 'чтения' : 'read'}` : ''}
+                </p>
+                {post.tags && post.tags.length > 0 && (
+                  <div className="mt-5 flex flex-wrap gap-2">
+                    {post.tags.map((tag) => (
+                      <Link key={tag} href={`/${locale}/blog/tag/${encodeURIComponent(tag)}/`} className="chip transition-colors hover:border-brand-400 hover:text-brand-600">
+                        #{tag}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </Reveal>
+
+              <div
+                className="prose prose-lg mt-10 max-w-none prose-headings:font-semibold prose-headings:text-sand-900 prose-p:text-sand-700 prose-a:text-brand-600 prose-a:no-underline hover:prose-a:underline prose-strong:text-sand-900 prose-li:text-sand-700 prose-blockquote:border-brand-400 prose-blockquote:text-sand-600 prose-code:text-brand-700 prose-hr:border-sand-200 dark:prose-invert dark:prose-headings:text-sand-50 dark:prose-p:text-sand-300 dark:prose-a:text-brand-400 dark:prose-strong:text-sand-50 dark:prose-li:text-sand-300 dark:prose-blockquote:text-sand-400 dark:prose-hr:border-sand-800"
+                dangerouslySetInnerHTML={{ __html: html }}
+              />
+
+              <ShareButtons locale={locale} title={post.title} />
+              <RelatedPosts
+                locale={locale}
+                current={post.slug}
+                all={getAllPosts(locale).map((p) => ({ slug: p.slug, title: p.title, tags: p.tags || [] }))}
+              />
+              <Newsletter locale={locale} />
+              <div className="cusdis-wrapper mt-14">
+                <Comments locale={locale} />
+              </div>
+            </article>
+            <PostTOC locale={locale} />
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

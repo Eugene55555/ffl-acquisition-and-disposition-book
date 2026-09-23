@@ -42,28 +42,32 @@ export default function TagPage({ params }: { params: { locale: string; tag: str
   if (posts.length === 0) notFound();
 
   return (
-    <div>
-      <Link href={`/${locale}/blog/`} className="text-sm text-orange-500 hover:underline">
-        {t(locale, 'post.back')}
-      </Link>
-      <h1 className="mb-8 mt-4 text-3xl font-bold text-gray-900 dark:text-white">
-        #{tag}
-      </h1>
-      <div className="grid gap-6 sm:grid-cols-2">
-        {posts.map((p) => (
-          <Link
-            key={p.slug}
-            href={`/${locale}/blog/${p.slug}/`}
-            className="group rounded-xl border border-gray-200 p-6 transition hover:border-orange-400 hover:shadow-md dark:border-gray-800 dark:bg-gray-900"
-          >
-            <h2 className="text-xl font-semibold text-gray-900 group-hover:text-orange-500 dark:text-white">
-              {p.title}
-            </h2>
-            <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">{p.date}</p>
-            {p.description && <p className="mt-3 text-gray-600 dark:text-gray-300">{p.description}</p>}
-          </Link>
-        ))}
+    <section className="section">
+      <div className="shell">
+        <Link href={`/${locale}/blog/`} className="link-sweep text-sm text-sand-500 dark:text-sand-400">
+          {t(locale, 'post.back')}
+        </Link>
+        <h1 className="display mt-6 text-4xl text-sand-900 sm:text-5xl dark:text-sand-50">#{tag}</h1>
+        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {posts.map((p) => (
+            <Link
+              key={p.slug}
+              href={`/${locale}/blog/${p.slug}/`}
+              className="surface group flex h-full flex-col p-6 transition-all duration-500 hover:-translate-y-1 hover:border-brand-300"
+            >
+              <span className="font-mono text-[11px] uppercase tracking-wider text-sand-400">{p.date}</span>
+              <h2 className="mt-3 text-lg font-semibold leading-snug text-sand-900 transition-colors group-hover:text-brand-600 dark:text-sand-50 dark:group-hover:text-brand-400">
+                {p.title}
+              </h2>
+              {p.description && (
+                <p className="mt-3 line-clamp-3 flex-1 text-sm leading-relaxed text-sand-600 dark:text-sand-400">
+                  {p.description}
+                </p>
+              )}
+            </Link>
+          ))}
+        </div>
       </div>
-    </div>
+    </section>
   );
 }

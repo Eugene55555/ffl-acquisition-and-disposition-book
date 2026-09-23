@@ -4,211 +4,88 @@ import { useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import { type Locale } from '@/src/i18n/settings';
 
-// Cusdis — бесплатный open-source комментарий-сервис.
-// https://cusdis.com — проект Eugene55555.
-const CUSDIS_APP_ID = process.env.NEXT_PUBLIC_CUSDIS_APP_ID || '88e9de72-f907-4d0b-9aa4-bbbecc2a991a';
-const CUSDIS_HOST = process.env.NEXT_PUBLIC_CUSDIS_HOST || 'https://cusdis.com';
+/**
+ * Комментарии на giscus — обсуждения GitHub поверх репозитория сайта.
+ *
+ * Почему не Cusdis: хостинг cusdis.com перестал отвечать (HTTP 521 на самом сайте
+ * и на API), из-за чего скрипт iframe блокировался и комментарии не грузились.
+ * giscus не требует бэкенда: сообщения живут в GitHub Discussions того же репозитория,
+ * что и сайт, модерация — обычная модерация Discussions, спам-фильтр — GitHub.
+ *
+ * Тема оформления — своя, под палитру сайта: /giscus-light.css и /giscus-dark.css
+ * (в основе официальные темы giscus, переопределены переменные).
+ */
+const REPO = 'Eugene55555/ffl-acquisition-and-disposition-book';
+const REPO_ID = 'R_kgDOTXuLwA';
+const CATEGORY = 'General';
+const CATEGORY_ID = 'DIC_kwDOTXuLwM4DBMPB';
+const GISCUS_ORIGIN = 'https://giscus.app';
+const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH || '/ffl-acquisition-and-disposition-book';
 
-// Тексты, которые Cusdis показывает во всплывающих баннерах (надо прятать).
-const HIDE_TEXT_RE =
-  /soon|turn off|turned off|will be|awaiting|approval|wait for approval|has been sent|moderat|выкл|скоро|откл|одобр/i;
+const isDark = () =>
+  typeof document !== 'undefined' && document.documentElement.classList.contains('dark');
+
+const themeUrl = (dark: boolean) =>
+  `${window.location.origin}${BASE_PATH}/giscus-${dark ? 'dark' : 'light'}.css`;
 
 export function Comments({ locale }: { locale: Locale }) {
   const ref = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
 
-  // 1) Рендер/перерендер Cusdis при смене поста (SPA-навигация) и локали.
-  // 2) iframe растёт под контент (без «окна» и прокрутки).
-  // 3) Внутренний фон прозрачный -> наследует фон обёртки (единый цвет).
+  // Монтируем giscus заново при смене страницы/языка (SPA-навигация в static export).
   useEffect(() => {
-    if (!CUSDIS_APP_ID || !ref.current) return;
     const el = ref.current;
-    const isDark = document.documentElement.classList.contains('dark');
+    if (!el) return;
+    // Просто очищаем контейнер перед вставкой нового скрипта giscus —
+    // пользовательский HTML сюда не попадает, санитизация не требуется.
+    el.innerHTML = '';
 
-    const wireIframe = () => {
-      const ifr = el.querySelector('iframe');
-      if (!ifr) return;
+    const script = document.createElement('script');
+    script.src = `${GISCUS_ORIGIN}/client.js`;
+    script.async = true;
+    script.crossOrigin = 'anonymous';
 
-      const applyHeight = () => {
-        try {
-          const doc = ifr.contentDocument;
-          if (doc && doc.documentElement) {
-            ifr.style.height = doc.documentElement.scrollHeight + 'px';
-          }
-        } catch {
-          /* ignore */
-        }
-      };
-
-      const injectInnerFix = () => {
-        try {
-          const doc = ifr.contentDocument;
-          if (!doc || !doc.head) return;
-          if (!doc.getElementById('cusdis-inner-fix')) {
-            const s = doc.createElement('style');
-            s.id = 'cusdis-inner-fix';
-            s.textContent =
-              'html,body,#root,#root > div{background:transparent !important;}\n' +
-              /* 3) убрать "Comments powered by Cusdis" */
-              'a[href*="cusdis.com"]{display:none !important;}\n' +
-              /* 5) на мобильных имя и email — в 2 строки (1 колонка) */
-              '@media (max-width:640px){ .grid-cols-2{grid-template-columns:1fr !important;} }\n' +
-              /* 4) textarea не меньше ~2 строк (line-height) */
-              'textarea{min-height:3.5rem !important;}\n' +
-              /* убрать фокус-аутлайны внутри */
-              '*:focus{outline:none !important;}';
-            doc.head.appendChild(s);
-          }
-
-          // Всю динамику запускаем ВНУТРИ контекста iframe (через contentWindow),
-          // иначе MutationObserver/setInterval работают в контексте родителя и не видят баннеры.
-          const cw = ifr.contentWindow as unknown as Window & {
-            MutationObserver?: typeof MutationObserver;
-            setInterval?: typeof setInterval;
-          };
-          if (!cw || !cw.document) return;
-
-          const syncTheme = () => {
-            const rootDiv = cw.document.querySelector('#root > div');
-            if (rootDiv) {
-              const siteDark = document.documentElement.classList.contains('dark');
-              rootDiv.classList.toggle('dark', siteDark);
-            }
-          };
-          syncTheme();
-
-          const cleanup = () => {
-            const all = Array.from(cw.document.querySelectorAll<HTMLElement>('*'));
-            for (const node of all) {
-              const t = (node.textContent || '').trim();
-              if (t && t.length < 160 && HIDE_TEXT_RE.test(t) && node.children.length <= 2) {
-                node.style.display = 'none';
-                if (/sent|approval|wait for approval/i.test(t)) {
-                  const form = cw.document.querySelector('form');
-                  if (form) (form as HTMLFormElement).reset();
-                  cw.document.querySelectorAll('input, textarea').forEach((i) => {
-                    (i as HTMLInputElement).value = '';
-                  });
-                }
-              }
-            }
-            applyHeight();
-          };
-
-          if (cw.MutationObserver && cw.document.body) {
-            const mo = new cw.MutationObserver(cleanup);
-            mo.observe(cw.document.body, { childList: true, subtree: true });
-          }
-          if (cw.setInterval) {
-            const iv = cw.setInterval(cleanup, 500);
-            cw.setTimeout(() => cw.clearInterval!(iv), 20000);
-          }
-          cleanup();
-        } catch {
-          /* ignore */
-        }
-      };
-
-      ifr.addEventListener('load', () => {
-        applyHeight();
-        injectInnerFix();
-      });
-      applyHeight();
-      injectInnerFix();
-
-      // ResizeObserver ВНУТРИ iframe — ловит рост контента (новый коммент и т.п.)
-      const RO = ifr.contentWindow && (ifr.contentWindow as unknown as {
-        ResizeObserver?: typeof ResizeObserver;
-      }).ResizeObserver;
-      if (RO && ifr.contentDocument && ifr.contentDocument.body) {
-        try {
-          const ro = new RO(() => applyHeight());
-          ro.observe(ifr.contentDocument.body);
-        } catch {
-          /* ignore */
-        }
-      }
-
-      // Fallback-поллинг (на случай, если контент домонтируется позже)
-      const iv = setInterval(applyHeight, 600);
-      setTimeout(() => clearInterval(iv), 12000);
+    const attrs: Record<string, string> = {
+      'data-repo': REPO,
+      'data-repo-id': REPO_ID,
+      'data-category': CATEGORY,
+      'data-category-id': CATEGORY_ID,
+      'data-mapping': 'pathname',
+      'data-strict': '0',
+      'data-reactions-enabled': '1',
+      'data-emit-metadata': '0',
+      'data-input-position': 'bottom',
+      'data-theme': themeUrl(isDark()),
+      'data-lang': locale,
+      'data-loading': 'lazy',
     };
+    for (const [k, v] of Object.entries(attrs)) script.setAttribute(k, v);
 
-    const render = () => {
-      if (!ref.current) return;
-      const node = ref.current;
-      node.setAttribute('id', 'cusdis_thread');
-      node.setAttribute('data-host', CUSDIS_HOST);
-      node.setAttribute('data-app-id', CUSDIS_APP_ID);
-      node.setAttribute('data-page-id', window.location.pathname);
-      node.setAttribute('data-page-url', window.location.href);
-      node.setAttribute('data-page-title', document.title);
-      node.setAttribute('data-lang', locale);
-      node.setAttribute('data-theme', isDark ? 'dark' : 'light');
+    el.appendChild(script);
 
-      const w = window as unknown as { renderCusdis?: (t: HTMLElement) => void };
-      if (w.renderCusdis) {
-        w.renderCusdis(node);
-        setTimeout(wireIframe, 350);
-      }
+    return () => {
+      el.innerHTML = '';
     };
-
-    const existing = document.querySelector<HTMLScriptElement>(
-      'script[data-cusdis-loader]'
-    );
-    if (!existing) {
-      const s = document.createElement('script');
-      s.src = `${CUSDIS_HOST}/js/cusdis.es.js`;
-      s.async = true;
-      s.dataset.cusdisLoader = '1';
-      s.onload = render;
-      document.body.appendChild(s);
-    } else {
-      render();
-    }
   }, [locale, pathname]);
 
-  // 4) Синхронизация тёмной/светлой темы (класс .dark на <html>).
+  // Переключение темы на лету: giscus принимает setConfig через postMessage.
   useEffect(() => {
-    const applyTheme = () => {
-      const dark = document.documentElement.classList.contains('dark');
-      const w = window as unknown as {
-        CUSDIS?: { setTheme?: (t: string) => void };
-      };
-      if (w.CUSDIS && w.CUSDIS.setTheme) w.CUSDIS.setTheme(dark ? 'dark' : 'light');
-      // синхронизируем class="dark" внутри iframe (через контекст фрейма)
-      const ifr = document.querySelector('.cusdis-wrapper iframe') as HTMLIFrameElement | null;
-      const cw = ifr && (ifr.contentWindow as unknown as Window | null);
-      const doc = cw && (cw.document as Document | null);
-      if (doc) {
-        const rootDiv = doc.querySelector('#root > div');
-        if (rootDiv) rootDiv.classList.toggle('dark', dark);
-      }
+    const send = () => {
+      const iframe = document.querySelector<HTMLIFrameElement>('iframe.giscus-frame');
+      if (!iframe?.contentWindow) return;
+      iframe.contentWindow.postMessage(
+        { giscus: { setConfig: { theme: themeUrl(isDark()) } } },
+        GISCUS_ORIGIN,
+      );
     };
-    const observer = new MutationObserver(applyTheme);
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['class'],
-    });
-    return () => observer.disconnect();
+    const t = window.setTimeout(send, 600);
+    const observer = new MutationObserver(send);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    return () => {
+      window.clearTimeout(t);
+      observer.disconnect();
+    };
   }, []);
 
-  if (!CUSDIS_APP_ID) return null;
-  return (
-    <section className="mt-16 border-t border-orange-100 pt-10">
-      <div className="mx-auto w-full max-w-3xl px-4">
-        <h2 className="mb-2 text-center text-2xl font-bold tracking-tight text-neutral-900 font-serif md:text-3xl dark:text-white">
-          Comments
-        </h2>
-        <p className="mb-6 text-center text-sm text-neutral-500 dark:text-neutral-400">
-          Share your thoughts — join the conversation below.
-        </p>
-        {/* Без бордера / аутлайна / тени вокруг блока (п.1) */}
-        <div
-          ref={ref}
-          className="cusdis-wrapper min-w-0 overflow-hidden rounded-2xl bg-white p-4 outline-none focus:outline-none sm:p-5 dark:bg-gray-950"
-        />
-      </div>
-    </section>
-  );
+  return <div ref={ref} className="giscus-slot min-w-0" />;
 }

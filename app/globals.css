@@ -240,6 +240,9 @@
   .btn-ghost {
     @apply relative inline-flex select-none items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold transition-all duration-300;
     transition-timing-function: var(--ease-out-soft);
+    /* Блик не должен выезжать за пределы кнопки (иначе видно белый блок рядом) */
+    overflow: hidden;
+    isolation: isolate;
   }
   .btn-primary {
     color: #fff;
@@ -452,16 +455,100 @@
 .dark .hljs-number, .dark .hljs-symbol, .dark .hljs-bullet, .dark .hljs-link { color: #79c0ff; }
 .dark .hljs-deletion { color: #ffa198; }
 
-/* === Cusdis === */
-.cusdis-wrapper { width: 100%; }
-.cusdis-wrapper iframe {
+/* === Комментарии (giscus — GitHub Discussions) === */
+.giscus-slot { width: 100%; }
+.giscus-slot iframe.giscus-frame {
   display: block;
   width: 100% !important;
   min-width: 0;
   border: 0 !important;
-  scrollbar-width: none !important;
 }
-.cusdis-wrapper iframe::-webkit-scrollbar { display: none !important; }
+
+/* === 3D-карусель изданий (CSS preserve-3d, без библиотек) === */
+.carousel-wrap { display: flex; flex-direction: column; align-items: center; gap: 0.75rem; }
+.carousel-stage {
+  position: relative;
+  width: 100%;
+  height: clamp(280px, 50vw, 440px);
+  perspective: 1500px;
+  perspective-origin: 50% 42%;
+  touch-action: pan-y;
+  cursor: grab;
+  outline: none;
+}
+.carousel-stage:focus-visible { outline: 2px solid var(--color-brand-500); outline-offset: 6px; border-radius: 24px; }
+.carousel-stage[data-dragging='true'] { cursor: grabbing; }
+.carousel-ring {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transform: rotateX(-7deg) rotateY(var(--a, 0deg));
+}
+.carousel-slot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: clamp(100px, 20vw, 160px);
+  margin-left: calc(clamp(100px, 20vw, 160px) / -2);
+  transform-style: preserve-3d;
+  transform: translateY(-50%) rotateY(calc(var(--i) * (360deg / var(--n)))) translateZ(clamp(215px, 44vw, 390px));
+  backface-visibility: hidden;
+}
+.carousel-card { display: block; transition: filter 0.4s var(--ease-out-soft); }
+.carousel-card img {
+  width: 100%;
+  height: auto;
+  border-radius: 5px;
+  box-shadow: 0 30px 60px -28px rgba(12, 10, 9, 0.65), 0 2px 6px rgba(12, 10, 9, 0.3);
+  user-select: none;
+  -webkit-user-drag: none;
+}
+.carousel-card:hover { filter: brightness(1.07); }
+.carousel-stage::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 42%;
+  width: 60%;
+  height: 60%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(ellipse at center, rgba(249, 127, 14, 0.16), transparent 70%);
+  filter: blur(28px);
+  pointer-events: none;
+}
+.carousel-floor {
+  position: absolute;
+  left: 50%;
+  bottom: 3%;
+  width: 66%;
+  height: 34px;
+  transform: translateX(-50%);
+  background: radial-gradient(ellipse at center, rgba(12, 10, 9, 0.34), transparent 72%);
+  filter: blur(7px);
+  pointer-events: none;
+}
+.dark .carousel-floor { background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.6), transparent 72%); }
+.carousel-hint {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-sand-400);
+  text-align: center;
+}
+
+/* === Мобильное: читаемость и пальцевые цели === */
+@media (width < 640px) {
+  /* Мелкие метки (10–11px) на телефоне нечитаемы — поднимаем до 12px */
+  .text-\[10px\],
+  .text-\[11px\],
+  .eyebrow,
+  .chip { font-size: 12px; }
+  /* Ссылки-действия: высота под палец */
+  .link-sweep { min-height: 44px; }
+  footer nav a { min-height: 44px; display: inline-flex; align-items: center; }
+  .carousel-hint { font-size: 12px; }
+}
 
 /* === Уважаем «меньше движения» === */
 @media (prefers-reduced-motion: reduce) {

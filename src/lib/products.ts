@@ -47,7 +47,7 @@ export const BOOKS: Book[] = [
     slug: 'ffl-acquisition-disposition-120',
     series: 'classic',
     pages: 120,
-    trim: '6 × 9 in',
+    trim: '8.5 × 11 in',
     regulation: '27 CFR § 478.125',
     featured: true,
     editions: [
@@ -55,14 +55,14 @@ export const BOOKS: Book[] = [
         format: 'paperback',
         asin: 'B0H6V4X481',
         amazonUrl: `${AMZ}/dp/B0H6V4X481`,
-        price: '$24.99',
+        price: '$13.99',
         cover: cover('ffl-120-pb.jpg'),
       },
       {
         format: 'hardcover',
         asin: 'B0H6VSF6S6',
         amazonUrl: `${AMZ}/dp/B0H6VSF6S6`,
-        price: '$24.99',
+        price: '$19.99',
         cover: cover('ffl-120-hc.jpg'),
       },
     ],
@@ -136,7 +136,7 @@ export const BOOKS: Book[] = [
     series: 'expanded',
     pages: 200,
     entries: 1372,
-    trim: '6 × 9 in',
+    trim: '8.5 × 11 in',
     regulation: '27 CFR § 478.125',
     featured: true,
     editions: [
@@ -144,7 +144,7 @@ export const BOOKS: Book[] = [
         format: 'paperback',
         asin: 'B0HH6LZYFM',
         amazonUrl: `${AMZ}/dp/B0HH6LZYFM`,
-        price: '$22.99',
+        price: '$14.99',
         cover: cover('ffl-200-pb.jpg'),
       },
       {
@@ -223,7 +223,7 @@ export const BOOKS: Book[] = [
   {
     slug: 'firearms-dealer-ad-log-landscape',
     series: 'landscape',
-    pages: 120,
+    pages: 113,
     trim: '11 × 8.5 in (landscape)',
     regulation: '27 CFR § 478.125',
     editions: [
@@ -231,7 +231,7 @@ export const BOOKS: Book[] = [
         format: 'paperback',
         asin: 'B0H38N8XNL',
         amazonUrl: `${AMZ}/dp/B0H38N8XNL`,
-        price: '$15.99',
+        price: '$11.99',
         cover: cover('ffl-landscape-pb.jpg'),
       },
       {

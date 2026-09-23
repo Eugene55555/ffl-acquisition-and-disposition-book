@@ -28,7 +28,7 @@ const LINKS = [
     href: 'https://github.com/Eugene55555/ffl-acquisition-and-disposition-book/actions',
     hint: 'GitHub Actions',
   },
-  { key: 'login.linkComments', href: 'https://cusdis.com/dashboard', hint: 'cusdis.com' },
+  { key: 'login.linkComments', href: 'https://github.com/Eugene55555/ffl-acquisition-and-disposition-book/discussions', hint: 'github.com · Discussions' },
   { key: 'login.linkKdp', href: 'https://kdp.amazon.com', hint: 'kdp.amazon.com' },
 ] as const;
 

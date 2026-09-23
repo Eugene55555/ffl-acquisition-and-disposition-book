@@ -102,7 +102,7 @@ export default function ReviewsPage({ params }: { params: { locale: string } }) 
               {t(locale, 'reviews.commentsNote')}
             </p>
           </Reveal>
-          <div className="cusdis-wrapper mt-8">
+          <div className="giscus-slot mt-8">
             <Comments locale={locale} />
           </div>
         </div>

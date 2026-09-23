@@ -4,10 +4,11 @@ import { t } from '@/src/i18n/ui';
 import { locales, type Locale } from '@/src/i18n/settings';
 import { getAllPosts } from '@/src/lib/posts';
 import { alternatesFor, OG_IMAGE } from '@/src/lib/seo';
-import { BOOKS, bookUrl, cheapestEdition } from '@/src/lib/products';
+import { BOOKS, bookUrl, cheapestEdition, formatLabel } from '@/src/lib/products';
 import { Reveal } from '@/components/Reveal';
 import { Parallax } from '@/components/Parallax';
 import { BookGrid } from '@/components/BookCard';
+import { BookCarousel, type CarouselItem } from '@/components/BookCarousel';
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -126,6 +127,15 @@ export default function Home({ params }: { params: { locale: string } }) {
   const center = featured[1] ?? BOOKS[0];
   const left = featured[0] ?? BOOKS[1];
   const right = BOOKS[2];
+
+  // Все шесть изданий (3 книги × 2 формата) — для 3D-карусели
+  const carouselItems: CarouselItem[] = BOOKS.flatMap((b) =>
+    b.editions.map((e) => ({
+      cover: e.cover,
+      title: `${b[locale].title} — ${formatLabel(e.format, locale)}`,
+      href: `/${locale}/books/${b.slug}/`,
+    })),
+  );
 
   return (
     <div>
@@ -249,6 +259,27 @@ export default function Home({ params }: { params: { locale: string } }) {
           ))}
         </div>
       </div>
+
+      {/* ================= 3D-КАРУСЕЛЬ ИЗДАНИЙ ================= */}
+      <section className="section">
+        <div className="shell">
+          <Reveal>
+            <div className="mx-auto max-w-2xl text-center">
+              <p className="eyebrow">{t(locale, 'home.collection')}</p>
+              <h2 className="display mt-4 text-3xl text-sand-900 sm:text-4xl dark:text-sand-50">
+                {locale === 'ru'
+                  ? 'Все шесть изданий — покрутите, чтобы рассмотреть'
+                  : 'All six editions — spin them to look closer'}
+              </h2>
+            </div>
+          </Reveal>
+          <Reveal delay={1}>
+            <div className="mt-12">
+              <BookCarousel items={carouselItems} locale={locale} />
+            </div>
+          </Reveal>
+        </div>
+      </section>
 
       {/* ================= КОЛЛЕКЦИЯ ================= */}
       <section className="section" id="collection">

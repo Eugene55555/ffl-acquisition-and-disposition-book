@@ -109,7 +109,10 @@ export default async function PostPage({ params }: { params: { locale: string; s
                 all={getAllPosts(locale).map((p) => ({ slug: p.slug, title: p.title, tags: p.tags || [] }))}
               />
               <Newsletter locale={locale} />
-              <div className="cusdis-wrapper mt-14">
+              <div className="giscus-slot mt-14 border-t border-sand-200 pt-10 dark:border-sand-800">
+                <h2 className="display mb-6 text-2xl text-sand-900 dark:text-sand-50">
+                  {locale === 'ru' ? 'Обсудить запись' : 'Discuss this post'}
+                </h2>
                 <Comments locale={locale} />
               </div>
             </article>

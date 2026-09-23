@@ -346,7 +346,7 @@ export function Footer({ locale }: { locale: Locale }) {
               <Link
                 key={book.slug}
                 href={bookUrl(book, locale)}
-                className="text-sm text-sand-600 transition-colors hover:text-brand-600 dark:text-sand-400 dark:hover:text-brand-400"
+                className="inline-flex min-h-[44px] items-center text-sm text-sand-600 transition-colors hover:text-brand-600 sm:min-h-0 dark:text-sand-400 dark:hover:text-brand-400"
               >
                 {book[locale].title}
               </Link>
@@ -361,7 +361,7 @@ export function Footer({ locale }: { locale: Locale }) {
               <Link
                 key={item.key}
                 href={`/${locale}${item.href}`}
-                className="text-sm text-sand-600 transition-colors hover:text-brand-600 dark:text-sand-400 dark:hover:text-brand-400"
+                className="inline-flex min-h-[44px] items-center text-sm text-sand-600 transition-colors hover:text-brand-600 sm:min-h-0 dark:text-sand-400 dark:hover:text-brand-400"
               >
                 {t(locale, item.key)}
               </Link>

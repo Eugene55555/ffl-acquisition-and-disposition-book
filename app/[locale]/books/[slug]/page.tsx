@@ -263,7 +263,7 @@ export default function BookPage({ params }: { params: { locale: string; slug: s
               {t(locale, 'book.commentsNote')}
             </p>
           </Reveal>
-          <div className="cusdis-wrapper mt-8">
+          <div className="giscus-slot mt-8">
             <Comments locale={locale} />
           </div>
         </div>

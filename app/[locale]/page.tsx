@@ -307,6 +307,13 @@ export default function Home({ params }: { params: { locale: string } }) {
       {/* ================= ЦИТАТА РЕГЛАМЕНТА ================= */}
       <section className="relative overflow-hidden border-t border-sand-200 bg-sand-950 py-24 dark:border-sand-800">
         <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+          <img
+            src={`${process.env.BASE_PATH || '/ffl-acquisition-and-disposition-book'}/images/texture-dark.jpg`}
+            alt=""
+            className="h-full w-full object-cover opacity-40"
+            loading="lazy"
+          />
+          <div className="absolute inset-0 bg-sand-950/70" />
           <div className="absolute left-1/2 top-0 h-72 w-[46rem] -translate-x-1/2 rounded-full bg-brand-500/20 blur-[120px]" />
         </div>
         <Parallax speed={0.06} className="relative">

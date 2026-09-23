@@ -33,6 +33,7 @@ export function BookCarousel({
   const speed = useRef(0.16);
   const paused = useRef(false);
   const drag = useRef({ active: false, startX: 0, startAngle: 0, moved: false });
+  const paintRef = useRef<() => void>(() => {});
 
   useEffect(() => {
     const ring = ringRef.current;
@@ -43,9 +44,20 @@ export function BookCarousel({
     let raf = 0;
     let last = performance.now();
 
+    // Поворот кольца + «cover-flow»: передняя карточка ярче и крупнее, дальние глуше.
+    const slots = Array.from(ring.querySelectorAll<HTMLElement>('.carousel-slot'));
+    const per = 360 / Math.max(1, slots.length);
     const apply = () => {
       ring.style.setProperty('--a', `${angle.current}deg`);
+      slots.forEach((el, i) => {
+        let a = (((angle.current + i * per) % 360) + 360) % 360;
+        if (a > 180) a -= 360;
+        const k = Math.min(1, Math.abs(a) / 180);
+        el.style.setProperty('--b', (1 - k * 0.42).toFixed(3));
+        el.style.setProperty('--s', (1 - k * 0.16).toFixed(3));
+      });
     };
+    paintRef.current = apply;
 
     const tick = (now: number) => {
       const dt = Math.min(64, now - last);
@@ -128,11 +140,11 @@ export function BookCarousel({
         onKeyDown={(e) => {
           if (e.key === 'ArrowLeft') {
             angle.current -= 60;
-            ringRef.current?.style.setProperty('--a', `${angle.current}deg`);
+            paintRef.current();
           }
           if (e.key === 'ArrowRight') {
             angle.current += 60;
-            ringRef.current?.style.setProperty('--a', `${angle.current}deg`);
+            paintRef.current();
           }
         }}
       >

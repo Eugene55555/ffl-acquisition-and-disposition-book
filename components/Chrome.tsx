@@ -221,7 +221,7 @@ export function Header({ locale }: { locale: Locale }) {
           <div className="flex items-center gap-2">
             <Link
               href={`/${locale}/login/`}
-              className="hidden text-xs font-medium text-sand-400 transition-colors hover:text-brand-500 sm:block"
+              className="hidden min-h-[44px] items-center px-1 text-xs font-medium text-sand-400 transition-colors hover:text-brand-500 sm:inline-flex"
             >
               {t(locale, 'nav.login')}
             </Link>

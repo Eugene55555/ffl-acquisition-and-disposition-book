@@ -465,7 +465,7 @@
 }
 
 /* === 3D-карусель изданий (CSS preserve-3d, без библиотек) === */
-.carousel-wrap { display: flex; flex-direction: column; align-items: center; gap: 0.75rem; }
+.carousel-wrap { display: flex; flex-direction: column; align-items: center; gap: 0.75rem; overflow-x: clip; }
 .carousel-stage {
   position: relative;
   width: 100%;
@@ -491,10 +491,11 @@
   width: clamp(100px, 20vw, 160px);
   margin-left: calc(clamp(100px, 20vw, 160px) / -2);
   transform-style: preserve-3d;
-  transform: translateY(-50%) rotateY(calc(var(--i) * (360deg / var(--n)))) translateZ(clamp(215px, 44vw, 390px));
+  transform: translateY(-50%) rotateY(calc(var(--i) * (360deg / var(--n)))) translateZ(clamp(200px, 40vw, 345px))
+    scale(calc(var(--s, 1)));
   backface-visibility: hidden;
 }
-.carousel-card { display: block; transition: filter 0.4s var(--ease-out-soft); }
+.carousel-card { display: block; }
 .carousel-card img {
   width: 100%;
   height: auto;
@@ -502,8 +503,11 @@
   box-shadow: 0 30px 60px -28px rgba(12, 10, 9, 0.65), 0 2px 6px rgba(12, 10, 9, 0.3);
   user-select: none;
   -webkit-user-drag: none;
+  /* Дальние карточки приглушены — передняя читается как главная (cover-flow) */
+  filter: brightness(var(--b, 1));
+  transition: filter 0.5s var(--ease-out-soft);
 }
-.carousel-card:hover { filter: brightness(1.07); }
+.carousel-card:hover img { filter: brightness(calc(var(--b, 1) + 0.12)); }
 .carousel-stage::before {
   content: '';
   position: absolute;
@@ -538,15 +542,20 @@
 }
 
 /* === Мобильное: читаемость и пальцевые цели === */
-@media (width < 640px) {
-  /* Мелкие метки (10–11px) на телефоне нечитаемы — поднимаем до 12px */
+@media (width < 768px) {
+  /* Мелкие метки (10–11px) на телефоне и планшете нечитаемы — поднимаем до 12px */
   .text-\[10px\],
   .text-\[11px\],
   .eyebrow,
-  .chip { font-size: 12px; }
-  /* Ссылки-действия: высота под палец */
+  .chip,
+  .book-card__badge { font-size: 12px; }
+  /* Пальцевые цели: ссылки и кнопки не ниже 44px */
   .link-sweep { min-height: 44px; }
   footer nav a { min-height: 44px; display: inline-flex; align-items: center; }
+  .btn,
+  .btn-primary,
+  .btn-outline,
+  .btn-ghost { min-height: 44px; }
   .carousel-hint { font-size: 12px; }
 }
 

@@ -59,6 +59,7 @@ export default function BookPage({ params }: { params: { locale: string; slug: s
   const text = book[locale];
   const others = BOOKS.filter((b) => b.slug !== book.slug);
   const cover = cheapestEdition(book).cover;
+  const ogImage = absUrl(`/og/${book.slug}-${locale}.jpg`);
 
   const specs: { label: string; value: string }[] = [
     { label: t(locale, 'book.pages'), value: String(book.pages) },
@@ -70,20 +71,34 @@ export default function BookPage({ params }: { params: { locale: string; slug: s
 
   const jsonLd = {
     '@context': 'https://schema.org',
-    '@type': 'Book',
-    name: text.title,
-    description: text.blurb,
-    inLanguage: locale,
-    numberOfPages: book.pages,
-    bookFormat: 'https://schema.org/Paperback',
-    offers: book.editions.map((e) => ({
-      '@type': 'Offer',
-      price: e.price.replace('$', ''),
-      priceCurrency: 'USD',
-      availability: 'https://schema.org/InStock',
-      url: e.amazonUrl,
-      seller: { '@type': 'Organization', name: 'Amazon' },
-    })),
+    '@graph': [
+      ...book.editions.map((e) => ({
+        '@type': 'Book',
+        name: `${text.title} — ${formatLabel(e.format, locale)}`,
+        description: text.blurb,
+        inLanguage: locale,
+        numberOfPages: book.pages,
+        bookFormat: e.format === 'hardcover' ? 'https://schema.org/Hardcover' : 'https://schema.org/Paperback',
+        image: ogImage,
+        url: absUrl(`/books/${book.slug}`),
+        offers: {
+          '@type': 'Offer',
+          price: e.price.replace('$', ''),
+          priceCurrency: 'USD',
+          availability: 'https://schema.org/InStock',
+          url: e.amazonUrl,
+          seller: { '@type': 'Organization', name: 'Amazon' },
+        },
+      })),
+      {
+        '@type': 'FAQPage',
+        mainEntity: text.faq.map((f) => ({
+          '@type': 'Question',
+          name: f.q,
+          acceptedAnswer: { '@type': 'Answer', text: f.a },
+        })),
+      },
+    ],
   };
 
   return (

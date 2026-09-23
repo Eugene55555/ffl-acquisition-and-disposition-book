@@ -1,51 +1,51 @@
 import { type Locale } from '@/src/i18n/settings';
-import { PRODUCTS } from '@/src/lib/products';
+import { BOOKS, formatLabel, cheapestEdition, bookUrl } from '@/src/lib/products';
+import Link from 'next/link';
 
-export function BookCard({ locale }: { locale: Locale }) {
+export function BookCard({ book, locale }: { book: (typeof BOOKS)[number]; locale: Locale }) {
+  const text = book[locale];
+  const cheapest = cheapestEdition(book);
+  const href = bookUrl(book, locale);
+
   return (
-    <section className="space-y-6">
-      {PRODUCTS.map((p) => {
-        const c = p[locale];
-        return (
-          <div
-            key={p.asin}
-            className="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm dark:border-gray-800 dark:bg-gray-900"
-          >
-            <div className="flex flex-col items-center gap-8 sm:flex-row sm:items-center">
-              <img
-                src={p.cover}
-                alt={c.title}
-                width={180}
-                height={232}
-                loading="lazy"
-                className="rounded-lg shadow-md"
-              />
-              <div className="flex-1 text-center sm:text-left">
-                <span className="inline-block rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600 dark:bg-gray-800 dark:text-gray-300">
-                  {p.format === 'hardcover'
-                    ? locale === 'ru' ? 'Твёрдый переплёт' : 'Hardcover'
-                    : locale === 'ru' ? 'Бумажная' : 'Paperback'}
-                </span>
-                <h2 className="mt-3 text-2xl font-bold text-gray-900 dark:text-white">{c.title}</h2>
-                <p className="mt-3 text-gray-600 dark:text-gray-300">{c.blurb}</p>
-                <div className="mt-6 flex flex-col items-center gap-2 sm:items-start">
-                  <a
-                    href={p.amazonUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-block rounded-lg bg-[linear-gradient(to_right,#FF512F,#F09819)] px-7 py-3 font-semibold text-white shadow hover:opacity-90"
-                  >
-                    {c.buy}
-                  </a>
-                  <span className="text-sm text-gray-500 dark:text-gray-400">
-                    {p.price}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-        );
-      })}
-    </section>
+    <Link href={href} className="book-card group" aria-label={text.title}>
+      <div className="book-card__media">
+        <span className="book-card__badge">{book.regulation}</span>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={cheapest.cover} alt={`${text.title} — ${formatLabel(cheapest.format, locale)}`} loading="lazy" />
+      </div>
+      <div className="flex flex-1 flex-col p-6">
+        <p className="eyebrow">{book.pages} pages · {book.trim}</p>
+        <h3 className="mt-3 text-xl font-semibold leading-snug text-sand-900 dark:text-sand-50">
+          {text.title}
+        </h3>
+        <p className="mt-2 line-clamp-3 flex-1 text-sm leading-relaxed text-sand-600 dark:text-sand-400">
+          {text.blurb}
+        </p>
+        <div className="mt-5 flex items-center justify-between border-t border-sand-200 pt-4 dark:border-sand-800">
+          <span className="font-mono text-sm text-sand-500 dark:text-sand-400">
+            {locale === 'ru' ? 'от' : 'from'} {cheapest.price}
+          </span>
+          <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-600 dark:text-brand-400">
+            {locale === 'ru' ? 'Подробнее' : 'Details'}
+            <svg viewBox="0 0 24 24" className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M5 12h14M13 6l6 6-6 6" />
+            </svg>
+          </span>
+        </div>
+      </div>
+    </Link>
+  );
+}
+
+/** Сетка всех книг каталога. */
+export function BookGrid({ locale, limit }: { locale: Locale; limit?: number }) {
+  const list = limit ? BOOKS.slice(0, limit) : BOOKS;
+  return (
+    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {list.map((book) => (
+        <BookCard key={book.slug} book={book} locale={locale} />
+      ))}
+    </div>
   );
 }

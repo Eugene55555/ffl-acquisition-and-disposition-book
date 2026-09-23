@@ -7,13 +7,40 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  /* Точные токены из проекта screwfast (Tailwind v4, oklch) — НЕ подбирались на глаз */
+  /* === Палитра (Tailwind v4, oklch/hex) === */
   --color-*: initial;
   --color-transparent: transparent;
   --color-current: currentColor;
   --color-black: #000;
   --color-white: #fff;
 
+  /* Warm neutrals — «бумага и графит». Основа премиум-вида. */
+  --color-sand-50: #faf9f7;
+  --color-sand-100: #f4f2ee;
+  --color-sand-200: #e7e4dd;
+  --color-sand-300: #d5d0c7;
+  --color-sand-400: #a8a29e;
+  --color-sand-500: #78716c;
+  --color-sand-600: #57534e;
+  --color-sand-700: #44403c;
+  --color-sand-800: #262220;
+  --color-sand-900: #171412;
+  --color-sand-950: #0c0a09;
+
+  /* Brand — медь/янтарь. Акцент, читаемый и на светлом, и на тёмном. */
+  --color-brand-50: #fff8ed;
+  --color-brand-100: #ffefd3;
+  --color-brand-200: #ffdba6;
+  --color-brand-300: #ffc16e;
+  --color-brand-400: #ff9d36;
+  --color-brand-500: #f97f0e;
+  --color-brand-600: #e26405;
+  --color-brand-700: #bb4b08;
+  --color-brand-800: #953c0e;
+  --color-brand-900: #7a330f;
+  --color-brand-950: #421806;
+
+  /* Совместимость со старыми страницами (gray/orange/zinc/indigo/red/neutral/yellow) */
   --color-gray-50: oklch(0.985 0.002 247.839);
   --color-gray-100: oklch(0.967 0.003 264.542);
   --color-gray-200: oklch(0.928 0.006 264.531);
@@ -25,18 +52,6 @@
   --color-gray-800: oklch(0.278 0.033 256.848);
   --color-gray-900: oklch(0.21 0.034 264.665);
   --color-gray-950: oklch(0.13 0.028 261.692);
-
-  --color-indigo-50: oklch(0.962 0.018 272.314);
-  --color-indigo-100: oklch(0.93 0.034 272.788);
-  --color-indigo-200: oklch(0.87 0.065 274.039);
-  --color-indigo-300: oklch(0.785 0.115 274.713);
-  --color-indigo-400: oklch(0.673 0.182 276.935);
-  --color-indigo-500: oklch(0.585 0.233 277.117);
-  --color-indigo-600: oklch(0.511 0.262 276.966);
-  --color-indigo-700: oklch(0.457 0.24 277.023);
-  --color-indigo-800: oklch(0.398 0.195 277.366);
-  --color-indigo-900: oklch(0.359 0.144 278.697);
-  --color-indigo-950: oklch(0.257 0.09 281.288);
 
   --color-neutral-50: oklch(0.985 0 0);
   --color-neutral-100: oklch(0.97 0 0);
@@ -50,42 +65,6 @@
   --color-neutral-900: oklch(0.205 0 0);
   --color-neutral-950: oklch(0.145 0 0);
 
-  --color-yellow-50: oklch(0.987 0.026 102.212);
-  --color-yellow-100: oklch(0.973 0.071 103.193);
-  --color-yellow-200: oklch(0.945 0.129 101.54);
-  --color-yellow-300: oklch(0.905 0.182 98.111);
-  --color-yellow-400: oklch(0.852 0.199 91.936);
-  --color-yellow-500: oklch(0.795 0.184 86.047);
-  --color-yellow-600: oklch(0.681 0.162 75.834);
-  --color-yellow-700: oklch(0.554 0.135 66.442);
-  --color-yellow-800: oklch(0.476 0.114 61.907);
-  --color-yellow-900: oklch(0.421 0.095 57.708);
-  --color-yellow-950: oklch(0.286 0.066 53.813);
-
-  --color-orange-50: oklch(0.98 0.016 73.684);
-  --color-orange-100: oklch(0.954 0.038 75.164);
-  --color-orange-200: oklch(0.901 0.076 70.697);
-  --color-orange-300: oklch(70.72% 0.182 40.56);
-  --color-orange-400: oklch(67.4% 0.2072 39.23);
-  --color-orange-500: oklch(61.86% 0.1946 38.88);
-  --color-orange-600: oklch(0.646 0.222 41.116);
-  --color-orange-700: oklch(0.553 0.195 38.402);
-  --color-orange-800: oklch(0.47 0.157 37.304);
-  --color-orange-900: oklch(0.408 0.123 38.172);
-  --color-orange-950: oklch(0.266 0.079 36.259);
-
-  --color-red-50: oklch(0.971 0.013 17.38);
-  --color-red-100: oklch(0.936 0.032 17.717);
-  --color-red-200: oklch(0.885 0.062 18.334);
-  --color-red-300: oklch(0.808 0.114 19.571);
-  --color-red-400: oklch(0.704 0.191 22.216);
-  --color-red-500: oklch(0.637 0.237 25.331);
-  --color-red-600: oklch(0.577 0.245 27.325);
-  --color-red-700: oklch(0.505 0.213 27.518);
-  --color-red-800: oklch(0.444 0.177 26.899);
-  --color-red-900: oklch(0.396 0.141 25.723);
-  --color-red-950: oklch(0.258 0.092 26.042);
-
   --color-zinc-50: oklch(0.985 0 0);
   --color-zinc-100: oklch(0.967 0.001 286.375);
   --color-zinc-200: oklch(0.92 0.004 286.32);
@@ -98,26 +77,88 @@
   --color-zinc-900: oklch(0.21 0.006 285.885);
   --color-zinc-950: oklch(0.141 0.005 285.823);
 
-  /* Брендовый градиент pricing/CTA из screwfast */
-  --gradient-brand: linear-gradient(to right, #FF512F, #F09819);
+  --color-indigo-50: oklch(0.962 0.018 272.314);
+  --color-indigo-100: oklch(0.93 0.034 272.788);
+  --color-indigo-300: oklch(0.785 0.115 274.713);
+  --color-indigo-500: oklch(0.585 0.233 277.117);
+  --color-indigo-600: oklch(0.511 0.262 276.966);
+  --color-indigo-700: oklch(0.457 0.24 277.023);
+
+  --color-yellow-50: oklch(0.987 0.026 102.212);
+  --color-yellow-100: oklch(0.973 0.071 103.193);
+  --color-yellow-200: oklch(0.945 0.129 101.54);
+  --color-yellow-400: oklch(0.852 0.199 91.936);
+  --color-yellow-500: oklch(0.795 0.184 86.047);
+  --color-yellow-600: oklch(0.681 0.162 75.834);
+
+  --color-orange-50: oklch(0.98 0.016 73.684);
+  --color-orange-100: oklch(0.954 0.038 75.164);
+  --color-orange-200: oklch(0.901 0.076 70.697);
+  --color-orange-300: oklch(70.72% 0.182 40.56);
+  --color-orange-400: oklch(67.4% 0.2072 39.23);
+  --color-orange-500: oklch(61.86% 0.1946 38.88);
+  --color-orange-600: oklch(0.646 0.222 41.116);
+  --color-orange-700: oklch(0.553 0.195 38.402);
+  --color-orange-800: oklch(0.47 0.157 37.304);
+  --color-orange-900: oklch(0.408 0.123 38.172);
+
+  --color-red-50: oklch(0.971 0.013 17.38);
+  --color-red-100: oklch(0.936 0.032 17.717);
+  --color-red-200: oklch(0.885 0.062 18.334);
+  --color-red-300: oklch(0.808 0.114 19.571);
+  --color-red-400: oklch(0.704 0.191 22.216);
+  --color-red-500: oklch(0.637 0.237 25.331);
+  --color-red-600: oklch(0.577 0.245 27.325);
+  --color-red-700: oklch(0.505 0.213 27.518);
+  --color-red-800: oklch(0.444 0.177 26.899);
+  --color-red-900: oklch(0.396 0.141 25.723);
+
+  --color-emerald-400: oklch(0.765 0.177 163.223);
+  --color-emerald-500: oklch(0.696 0.17 162.48);
+  --color-emerald-600: oklch(0.596 0.145 163.225);
+  --color-emerald-700: oklch(0.508 0.118 165.612);
+
+  /* === Типографика === */
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Instrument Serif', ui-serif, Georgia, 'Times New Roman', serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* === Тени === */
+  --shadow-soft: 0 1px 2px rgba(12, 10, 9, 0.04), 0 8px 24px -12px rgba(12, 10, 9, 0.12);
+  --shadow-lift: 0 2px 4px rgba(12, 10, 9, 0.05), 0 24px 48px -20px rgba(12, 10, 9, 0.25);
+  --shadow-glow: 0 0 0 1px rgba(249, 127, 14, 0.25), 0 18px 40px -16px rgba(249, 127, 14, 0.55);
+
+  /* === Анимации === */
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out-soft: cubic-bezier(0.65, 0, 0.35, 1);
 }
 
-/* Совместимость border-color (как в v3) */
+/* === База === */
 @layer base {
   *,
   ::after,
   ::before,
   ::backdrop,
   ::file-selector-button {
-    border-color: var(--color-gray-200, currentColor);
+    border-color: var(--color-sand-200, currentColor);
   }
   button:not(:disabled),
   [role='button']:not(:disabled) {
     cursor: pointer;
   }
-  body {
-    @apply bg-white text-gray-800 antialiased;
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
   }
+
+  body {
+    @apply bg-sand-50 text-sand-800 antialiased;
+    font-family: var(--font-sans);
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'ss01';
+    text-rendering: optimizeLegibility;
+  }
+
   :root {
     color-scheme: light;
   }
@@ -125,21 +166,30 @@
     color-scheme: dark;
   }
   .dark body {
-    background-color: var(--color-gray-950);
-    color: var(--color-gray-100);
+    background-color: var(--color-sand-950);
+    color: var(--color-sand-100);
   }
 
-  /* === Утилита: скрыть полосу прокрутки (но оставить скролл) === */
+  h1, h2, h3, h4 {
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background: color-mix(in oklch, var(--color-brand-500) 28%, transparent);
+  }
+
+  /* Скрыть полосу прокрутки, оставив скролл */
   .no-scrollbar {
-    -ms-overflow-style: none;      /* IE/Edge */
-    scrollbar-width: none;         /* Firefox */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
   .no-scrollbar::-webkit-scrollbar {
-    display: none;                 /* WebKit */
+    display: none;
   }
 
-  /* На тач-устройствах прячем мобильный (оверлейный) скроллбар страницы,
-     который всплывает при свайпе, начатом с поля ввода. На десктопе оставляем как есть. */
   @media (hover: none) and (pointer: coarse) {
     html, body {
       scrollbar-width: none;
@@ -150,74 +200,260 @@
       display: none;
     }
   }
-  ::selection {
-    background: color-mix(in oklch, var(--color-orange-500) 25%, transparent);
+}
+
+/* === Компоненты === */
+@layer components {
+  /* --- Обёртки --- */
+  .shell {
+    @apply mx-auto w-full max-w-6xl px-5 sm:px-6 lg:px-8;
+  }
+  .section {
+    @apply py-20 sm:py-28;
+  }
+
+  /* --- Типографика --- */
+  .display {
+    font-family: var(--font-display);
+    font-weight: 400;
+    letter-spacing: -0.015em;
+    line-height: 1.02;
+  }
+  .eyebrow {
+    font-family: var(--font-mono);
+    @apply text-[11px] font-medium uppercase tracking-[0.22em] text-brand-600 dark:text-brand-400;
+  }
+  .lede {
+    @apply text-lg leading-relaxed text-sand-600 dark:text-sand-300 sm:text-xl;
+  }
+  .gradient-text {
+    background: linear-gradient(100deg, var(--color-brand-600), var(--color-brand-400) 55%, var(--color-brand-600));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* --- Кнопки --- */
+  .btn,
+  .btn-primary,
+  .btn-outline,
+  .btn-ghost {
+    @apply relative inline-flex select-none items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold transition-all duration-300;
+    transition-timing-function: var(--ease-out-soft);
+  }
+  .btn-primary {
+    color: #fff;
+    background: linear-gradient(100deg, var(--color-brand-600), var(--color-brand-500));
+    box-shadow: 0 10px 30px -12px rgba(226, 100, 5, 0.65);
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 18px 40px -14px rgba(226, 100, 5, 0.75);
+  }
+  .btn-primary::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(105deg, transparent 35%, rgba(255, 255, 255, 0.45) 50%, transparent 65%);
+    transform: translateX(-120%);
+    transition: transform 0.7s var(--ease-out-soft);
+    pointer-events: none;
+  }
+  .btn-primary:hover::after {
+    transform: translateX(120%);
+  }
+  .btn-outline {
+    @apply border border-sand-300 text-sand-800 dark:border-sand-700 dark:text-sand-100;
+  }
+  .btn-outline:hover {
+    @apply border-brand-500 text-brand-600 dark:text-brand-400;
+    transform: translateY(-2px);
+  }
+  .btn-ghost {
+    @apply text-sand-600 dark:text-sand-300;
+  }
+  .btn-ghost:hover {
+    @apply text-brand-600 dark:text-brand-400;
+  }
+
+  /* --- Ссылка с «пробегающим» подчёркиванием --- */
+  .link-sweep {
+    @apply relative inline-flex items-center gap-1 font-medium;
+  }
+  .link-sweep::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -3px;
+    height: 1px;
+    width: 100%;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.35s var(--ease-out-soft);
+  }
+  .link-sweep:hover::after {
+    transform: scaleX(1);
+  }
+
+  /* --- Поверхности --- */
+  .surface {
+    @apply rounded-3xl border border-sand-200 bg-white dark:border-sand-800 dark:bg-sand-900/60;
+    box-shadow: var(--shadow-soft);
+  }
+  .glass {
+    background: color-mix(in oklch, white 72%, transparent);
+    backdrop-filter: saturate(180%) blur(14px);
+    -webkit-backdrop-filter: saturate(180%) blur(14px);
+  }
+  .dark .glass {
+    background: color-mix(in oklch, var(--color-sand-950) 72%, transparent);
+  }
+
+  /* --- Карточка книги с наклоном и свечением --- */
+  .book-card {
+    @apply relative flex h-full flex-col overflow-hidden rounded-2xl border border-sand-200 bg-white transition-all duration-500 dark:border-sand-800 dark:bg-sand-900/60;
+    box-shadow: var(--shadow-soft);
+    transition-timing-function: var(--ease-out-soft);
+  }
+  .book-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-lift);
+    border-color: color-mix(in oklch, var(--color-brand-400) 60%, transparent);
+  }
+  .book-card__media {
+    @apply relative overflow-hidden bg-gradient-to-br from-sand-100 to-sand-200 dark:from-sand-900 dark:to-sand-950;
+    aspect-ratio: 3 / 4;
+  }
+  .book-card__media img {
+    @apply h-full w-full object-contain p-6 transition-transform duration-700;
+    transition-timing-function: var(--ease-out-soft);
+  }
+  .book-card:hover .book-card__media img {
+    transform: scale(1.06) rotate(-1.2deg);
+  }
+  .book-card__badge {
+    font-family: var(--font-mono);
+    @apply absolute left-3 top-3 rounded-full bg-sand-950/80 px-2.5 py-1 text-[10px] font-medium uppercase tracking-widest text-white backdrop-blur;
+  }
+
+  /* --- Плитки фактов / иконки --- */
+  .icon-tile {
+    @apply flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-sand-200 bg-white text-brand-600 dark:border-sand-800 dark:bg-sand-900 dark:text-brand-400;
+  }
+
+  /* --- Ссылки-«чипы» --- */
+  .chip {
+    font-family: var(--font-mono);
+    @apply inline-flex items-center gap-1.5 rounded-full border border-sand-200 bg-white/70 px-3 py-1 text-[11px] uppercase tracking-wider text-sand-600 dark:border-sand-800 dark:bg-sand-900/60 dark:text-sand-300;
   }
 }
 
-/* Подсветка кода: тёмная тема переопределяет github -> github-dark */
-.dark .hljs {
-  color: #c9d1d9;
-  background: #0d1117;
-}
-.dark .hljs-comment,
-.dark .hljs-quote {
-  color: #8b949e;
-}
-.dark .hljs-keyword,
-.dark .hljs-selector-tag,
-.dark .hljs-built_in,
-.dark .hljs-name,
-.dark .hljs-tag {
-  color: #ff7b72;
-}
-.dark .hljs-string,
-.dark .hljs-title,
-.dark .hljs-section,
-.dark .hljs-attribute,
-.dark .hljs-literal,
-.dark .hljs-template-tag,
-.dark .hljs-template-variable,
-.dark .hljs-type,
-.dark .hljs-addition {
-  color: #a5d6ff;
-}
-.dark .hljs-number,
-.dark .hljs-symbol,
-.dark .hljs-bullet,
-.dark .hljs-link {
-  color: #79c0ff;
-}
-.dark .hljs-deletion {
-  color: #ffa198;
-}
-
-/* Уважаем настройки "меньше движения" */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  ::before,
-  ::after {
-    animation-duration: 0.001ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.001ms !important;
-    scroll-behavior: auto !important;
+/* === Утилиты / анимации === */
+@layer utilities {
+  /* Появление при скролле */
+  .reveal {
+    opacity: 0;
+    transform: translateY(22px);
+    transition: opacity 0.7s var(--ease-out-soft), transform 0.7s var(--ease-out-soft);
+    will-change: opacity, transform;
   }
+  .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+  .reveal-delay-1 { transition-delay: 0.08s; }
+  .reveal-delay-2 { transition-delay: 0.16s; }
+  .reveal-delay-3 { transition-delay: 0.24s; }
+  .reveal-delay-4 { transition-delay: 0.32s; }
+  .reveal-delay-5 { transition-delay: 0.4s; }
+
+  /* Параллакс-слои: значение --py подставляет JS */
+  .parallax {
+    will-change: transform;
+    transform: translate3d(0, calc(var(--py, 0px)), 0);
+  }
+
+  .hover-lift {
+    transition: transform 0.4s var(--ease-out-soft);
+  }
+  .hover-lift:hover {
+    transform: translateY(-4px);
+  }
+
+  .hairline {
+    @apply h-px w-full bg-gradient-to-r from-transparent via-sand-300 to-transparent dark:via-sand-700;
+  }
+
+  .noise::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .text-balance { text-wrap: balance; }
+  .text-pretty { text-wrap: pretty; }
 }
 
-/* Плавное появление выпадающих меню (язык) */
+/* === Кейфреймы === */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes floatY {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+@keyframes sheen {
+  from { transform: translateX(-120%); }
+  to { transform: translateX(120%); }
+}
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@keyframes glowPulse {
+  0%, 100% { opacity: 0.45; }
+  50% { opacity: 0.8; }
+}
 @keyframes dropdownIn {
-  from { opacity: 0; transform: translateY(-4px) scale(0.98); }
+  from { opacity: 0; transform: translateY(-6px) scale(0.97); }
   to { opacity: 1; transform: translateY(0) scale(1); }
 }
+
+.animate-fade-up { animation: fadeUp 0.7s var(--ease-out-soft) both; }
+.animate-float { animation: floatY 6s ease-in-out infinite; }
+.animate-glow { animation: glowPulse 7s ease-in-out infinite; }
 .dropdown-in {
-  animation: dropdownIn 0.14s ease-out;
+  animation: dropdownIn 0.18s var(--ease-out-soft);
   transform-origin: top right;
 }
-
-/* === Cusdis: профессиональный вид + адаптив === */
-.cusdis-wrapper {
-  width: 100%;
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 32s linear infinite;
 }
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+/* === Подсветка кода === */
+.dark .hljs { color: #c9d1d9; background: #0d1117; }
+.dark .hljs-comment, .dark .hljs-quote { color: #8b949e; }
+.dark .hljs-keyword, .dark .hljs-selector-tag, .dark .hljs-built_in,
+.dark .hljs-name, .dark .hljs-tag { color: #ff7b72; }
+.dark .hljs-string, .dark .hljs-title, .dark .hljs-section, .dark .hljs-attribute,
+.dark .hljs-literal, .dark .hljs-template-tag, .dark .hljs-template-variable,
+.dark .hljs-type, .dark .hljs-addition { color: #a5d6ff; }
+.dark .hljs-number, .dark .hljs-symbol, .dark .hljs-bullet, .dark .hljs-link { color: #79c0ff; }
+.dark .hljs-deletion { color: #ffa198; }
+
+/* === Cusdis === */
+.cusdis-wrapper { width: 100%; }
 .cusdis-wrapper iframe {
   display: block;
   width: 100% !important;
@@ -225,6 +461,16 @@
   border: 0 !important;
   scrollbar-width: none !important;
 }
-.cusdis-wrapper iframe::-webkit-scrollbar {
-  display: none !important;            /* WebKit */
+.cusdis-wrapper iframe::-webkit-scrollbar { display: none !important; }
+
+/* === Уважаем «меньше движения» === */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .reveal { opacity: 1; transform: none; }
+  .parallax { transform: none !important; }
 }

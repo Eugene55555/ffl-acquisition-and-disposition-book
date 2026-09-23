@@ -15,8 +15,12 @@ const themeScript = `
 `;
 
 export const metadata = {
-  title: 'Blog',
-  description: 'A fast, clean static blog.',
+  title: {
+    default: 'ATF-Compliant FFL Bound Book — Acquisition & Disposition Logs',
+    template: '%s · Silas Thorne',
+  },
+  description:
+    'Pre-formatted, ATF-compliant FFL acquisition and disposition log books for dealers, gunsmiths and manufacturers.',
   icons: {
     icon: [
       { url: '/ffl-acquisition-and-disposition-book/icon-192.png', sizes: '192x192' },
@@ -31,12 +35,18 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang={defaultLocale} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
-        <link rel="alternate" type="application/rss+xml" title="Blog RSS" href={siteUrl() + '/feed.xml'} />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap"
+        />
+        <link rel="alternate" type="application/rss+xml" title="Silas Thorne — RSS" href={siteUrl() + '/feed.xml'} />
       </head>
       <body>
         <a
           href="#main"
-          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-orange-500 focus:px-4 focus:py-2 focus:font-semibold focus:text-white"
+          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-brand-600 focus:px-5 focus:py-2.5 focus:text-sm focus:font-semibold focus:text-white"
         >
           Skip to content
         </a>

@@ -11,12 +11,12 @@ export function generateStaticParams() {
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl()),
   title: {
-    default: 'Blog',
-    template: '%s · Blog',
+    default: 'ATF-Compliant FFL Bound Book — Acquisition & Disposition Logs',
+    template: '%s · Silas Thorne',
   },
   openGraph: {
     type: 'website',
-    siteName: 'Blog',
+    siteName: 'Silas Thorne',
     images: [OG_IMAGE.en],
   },
   twitter: {
@@ -36,7 +36,7 @@ export default function LocaleLayout({
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    name: 'Blog',
+    name: 'Silas Thorne — FFL compliance books',
     url: siteUrl(),
     inLanguage: locale,
   };
@@ -47,7 +47,7 @@ export default function LocaleLayout({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <Header locale={locale} />
-      <main id="main" className="mx-auto max-w-5xl px-4 py-10">{children}</main>
+      <main id="main">{children}</main>
       <Footer locale={locale} />
     </>
   );

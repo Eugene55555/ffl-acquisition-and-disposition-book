@@ -138,7 +138,48 @@ export default function BuyPage({ params }: { params: { locale: string } }) {
             </h2>
           </Reveal>
           <Reveal delay={1}>
-            <div className="surface mt-8 overflow-x-auto">
+            {/* Телефон: карточки вместо горизонтальной прокрутки таблицы */}
+            <div className="mt-8 space-y-4 sm:hidden">
+              {BOOKS.map((book) => (
+                <div key={book.slug} className="surface p-5">
+                  <Link
+                    href={bookUrl(book, locale)}
+                    className="text-base font-semibold leading-snug text-sand-900 dark:text-sand-50"
+                  >
+                    {book[locale].title}
+                  </Link>
+                  <dl className="mt-4 grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
+                    {[
+                      { k: t(locale, 'book.pages'), v: String(book.pages) },
+                      {
+                        k: t(locale, 'book.entries'),
+                        v: book.entries ? book.entries.toLocaleString(locale === 'ru' ? 'ru-RU' : 'en-US') : '—',
+                      },
+                      { k: t(locale, 'book.trim'), v: book.trim },
+                    ].map((row) => (
+                      <div key={row.k}>
+                        <dt className="font-mono text-[11px] uppercase tracking-[0.14em] text-sand-400">{row.k}</dt>
+                        <dd className="mt-1 text-sand-700 dark:text-sand-300">{row.v}</dd>
+                      </div>
+                    ))}
+                    <div className="col-span-2">
+                      <dt className="font-mono text-[11px] uppercase tracking-[0.14em] text-sand-400">
+                        {locale === 'ru' ? 'Цена' : 'Price'}
+                      </dt>
+                      <dd className="mt-1 space-y-0.5 font-mono text-sm text-sand-700 dark:text-sand-300">
+                        {book.editions.map((e) => (
+                          <span key={e.asin} className="block">
+                            {formatLabel(e.format, locale)} — {e.price}
+                          </span>
+                        ))}
+                      </dd>
+                    </div>
+                  </dl>
+                </div>
+              ))}
+            </div>
+
+            <div className="surface mt-8 hidden overflow-x-auto sm:block">
               <table className="w-full min-w-[36rem] text-sm">
                 <thead>
                   <tr className="border-b border-sand-200 text-left dark:border-sand-800">
@@ -173,7 +214,11 @@ export default function BuyPage({ params }: { params: { locale: string } }) {
                       </td>
                       <td className="px-6 py-4 text-sand-600 dark:text-sand-400">{book.trim}</td>
                       <td className="px-6 py-4 text-right font-mono text-sand-700 dark:text-sand-300">
-                        {book.editions.map((e) => e.price).join(' / ')}
+                        {book.editions.map((e) => (
+                          <span key={e.asin} className="block whitespace-nowrap">
+                            {formatLabel(e.format, locale)} — {e.price}
+                          </span>
+                        ))}
                       </td>
                     </tr>
                   ))}

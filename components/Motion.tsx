@@ -33,12 +33,14 @@ function finePointer() {
 export function Tilt({
   children,
   className = '',
+  innerClassName = '',
   max = 7,
   shine = true,
   style,
 }: {
   children: ReactNode;
   className?: string;
+  innerClassName?: string;
   max?: number;
   shine?: boolean;
   style?: CSSProperties;
@@ -68,7 +70,7 @@ export function Tilt({
     <div className={`tilt-wrap ${className}`} style={style}>
       <div
         ref={ref}
-        className="tilt relative h-full"
+        className={`tilt relative h-full ${innerClassName}`}
         onPointerMove={onMove}
         onPointerLeave={onLeave}
       >

@@ -1,0 +1,244 @@
+/* ==========================================================================
+   ОТЗЫВЫ — то, чего нет в Tailwind: кейфреймы и мелкие штрихи.
+   Подключается из components/ReviewSystem.tsx. Токены палитры
+   (--color-brand-*, --color-sand-*, --ease-out-soft) приходят из app/globals.css.
+   ========================================================================== */
+
+/* --- Кейфреймы ---------------------------------------------------------- */
+
+/* Карточка отзыва появляется снизу с лёгким «дыханием» масштаба. */
+@keyframes reviewCardIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.985);
+    filter: blur(2px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
+/* Блик по кромке звезды при выборе. */
+@keyframes reviewStarPop {
+  0% { transform: scale(0.72); }
+  55% { transform: scale(1.22); }
+  100% { transform: scale(1); }
+}
+
+/* Тонкий «пробегающий» блик — для крупной средней оценки. */
+@keyframes reviewGlint {
+  from { transform: translateX(-130%) rotate(12deg); }
+  to { transform: translateX(230%) rotate(12deg); }
+}
+
+/* Shimmer для скелетонов и полосок распределения. */
+@keyframes reviewShimmer {
+  from { background-position: -160% 0; }
+  to { background-position: 260% 0; }
+}
+
+/* Модалка: мягкий въезд + затемнение фона. */
+@keyframes reviewModalIn {
+  from { opacity: 0; transform: translateY(18px) scale(0.975); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes reviewBackdropIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Полоска заполнения «звёздного» прогресса. */
+@keyframes reviewBarGrow {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+@keyframes reviewSuccessIn {
+  0% { opacity: 0; transform: scale(0.9); }
+  60% { opacity: 1; transform: scale(1.04); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+/* --- Карточки и сводка -------------------------------------------------- */
+
+.review-card {
+  animation: reviewCardIn 0.55s var(--ease-out-soft) both;
+}
+
+/* Появление с задержкой по индексу карточки (последовательная «волна»). */
+.review-card[data-index='0'] { animation-delay: 0ms; }
+.review-card[data-index='1'] { animation-delay: 60ms; }
+.review-card[data-index='2'] { animation-delay: 120ms; }
+.review-card[data-index='3'] { animation-delay: 180ms; }
+.review-card[data-index='4'] { animation-delay: 240ms; }
+.review-card[data-index='5'] { animation-delay: 300ms; }
+.review-card[data-index='6'] { animation-delay: 360ms; }
+.review-card[data-index='7'] { animation-delay: 420ms; }
+.review-card[data-index='8'] { animation-delay: 480ms; }
+.review-card[data-index='9'] { animation-delay: 540ms; }
+.review-card[data-index='10'] { animation-delay: 600ms; }
+.review-card[data-index='11'] { animation-delay: 660ms; }
+
+.review-avatar {
+  font-family: var(--font-mono);
+  letter-spacing: 0.02em;
+}
+
+.review-average {
+  font-family: var(--font-display);
+  letter-spacing: -0.03em;
+}
+
+/* Обёртка крупной оценки: держит блик внутри, не даёт ему вылезти. */
+.review-average-wrap {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.review-glint::after {
+  content: '';
+  position: absolute;
+  top: -20%;
+  bottom: -20%;
+  left: 0;
+  width: 34%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+  animation: reviewGlint 4.5s var(--ease-out-soft) 1.2s infinite;
+  pointer-events: none;
+}
+
+.review-bar {
+  transform-origin: left center;
+  animation: reviewBarGrow 0.8s var(--ease-out-soft) both;
+}
+
+.review-skeleton {
+  background-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    color-mix(in oklch, var(--color-brand-400) 26%, transparent) 45%,
+    transparent 90%
+  );
+  background-size: 220% 100%;
+  background-repeat: no-repeat;
+  animation: reviewShimmer 1.8s linear infinite;
+}
+
+/* --- Звёзды ------------------------------------------------------------- */
+
+/* Кликабельная/выбираемая звезда: цель ≥44px на мобильном, аккуратный ховер. */
+.review-star-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 9999px;
+  color: var(--color-sand-300);
+  transition: transform 0.25s var(--ease-out-soft), color 0.25s var(--ease-out-soft),
+    background-color 0.25s var(--ease-out-soft);
+}
+.review-star-btn:hover {
+  background-color: color-mix(in oklch, var(--color-brand-500) 10%, transparent);
+  transform: translateY(-2px);
+}
+.review-star-btn:focus-visible {
+  outline: 2px solid var(--color-brand-500);
+  outline-offset: 2px;
+}
+.review-star-btn[data-filled='true'] {
+  color: var(--color-brand-500);
+}
+.review-star-btn[data-filled='true'] svg {
+  animation: reviewStarPop 0.32s var(--ease-out-soft);
+}
+.dark .review-star-btn {
+  color: var(--color-sand-700);
+}
+.dark .review-star-btn[data-filled='true'] {
+  color: var(--color-brand-400);
+}
+
+.review-stars svg {
+  display: block;
+}
+
+/* --- Модалка ------------------------------------------------------------ */
+
+.review-backdrop {
+  animation: reviewBackdropIn 0.22s var(--ease-out-soft) both;
+  background-color: rgba(12, 10, 9, 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.review-modal {
+  animation: reviewModalIn 0.3s var(--ease-out-soft) both;
+  max-height: min(90vh, 52rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* Скролл модалки на мобильном — без «дёрганья» страницы под ней. */
+.review-modal::-webkit-scrollbar { width: 10px; }
+.review-modal::-webkit-scrollbar-thumb {
+  background: color-mix(in oklch, var(--color-sand-400) 45%, transparent);
+  border-radius: 9999px;
+}
+
+.review-success {
+  animation: reviewSuccessIn 0.45s var(--ease-out-soft) both;
+}
+
+/* Убираем «родные» стрелки у полей ввода в тёмной теме на мобильном Safari. */
+.review-modal input,
+.review-modal textarea,
+.review-modal select {
+  -webkit-appearance: none;
+  appearance: none;
+}
+.review-modal textarea { resize: vertical; }
+
+/* --- Мобильное: пальцевые цели ------------------------------------------ */
+
+@media (width < 768px) {
+  .review-star-btn {
+    width: 44px;
+    height: 44px;
+  }
+  .review-star-btn svg {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+/* --- Уважаем «меньше движения» ------------------------------------------ */
+
+@media (prefers-reduced-motion: reduce) {
+  .review-card,
+  .review-bar,
+  .review-modal,
+  .review-backdrop,
+  .review-success,
+  .review-skeleton {
+    animation: none !important;
+  }
+  .review-card {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+  .review-glint::after {
+    display: none;
+  }
+  .review-star-btn,
+  .review-star-btn:hover {
+    transform: none;
+  }
+  .review-star-btn[data-filled='true'] svg {
+    animation: none !important;
+  }
+}

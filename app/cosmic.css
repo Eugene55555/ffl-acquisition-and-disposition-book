@@ -1,0 +1,292 @@
+/* ============================================================================
+   cosmic.css — фоновые «космические» слои для ffl-site.
+   Только CSS-градиенты, анимации и @property. Никаких зависимостей.
+
+   Подключается из components/Cosmic.tsx (import '../app/cosmic.css'),
+   поэтому layout.tsx править не обязательно.
+
+   Правила игры:
+   - все слои position: fixed + pointer-events: none + z-index: -1 → контент
+     сайта остаётся полностью кликабельным, а горизонтального переполнения нет;
+   - body's background уходит на canvas документа (html без background), поэтому
+     слой с z-index: -1 видно поверх него, но ПОД любым текстом и блоками;
+   - prefers-reduced-motion → слои замирают в красивой статике.
+   ========================================================================== */
+
+/* --- Регистрируем кастомные свойства: только зарегистрированные <number>
+       интерполируются плавно (иначе анимация прыгает ступеньками). --- */
+@property --cosmic-x {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 0;
+}
+@property --cosmic-y {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 0;
+}
+@property --cosmic-s {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 1;
+}
+@property --cosmic-o {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 0.5;
+}
+
+/* ================================ ОБЩЕЕ ================================= */
+
+.cosmic-layer {
+  position: fixed;
+  inset: 0;
+  z-index: -1; /* под всем контентом; фон body рисуется ниже (canvas документа) */
+  overflow: hidden; /* страховка от горизонтального переполнения */
+  pointer-events: none;
+  contain: layout paint;
+}
+
+.cosmic-canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* =============================== AURORA ================================= */
+/* 4 размытых пятна: тёплая медь (brand-*) и холодные синие акценты.
+   Светлая тема — multiply (мягкая «тушь» по бумаге), тёмная — screen. */
+
+.cosmic-aurora {
+  position: fixed;
+  inset: 0;
+  z-index: -1; /* как и звёзды: под контентом, над фоном body */
+  overflow: hidden; /* пятна вылезают за вьюпорт — обрезаем, без горизонтального скролла */
+  pointer-events: none;
+  contain: layout paint;
+  opacity: calc(0.34 * var(--cosmic-aurora-intensity, 1));
+  mix-blend-mode: multiply;
+  /* холодный акцент: индиго из палитры, подмешанный к небу */
+  --cosmic-cold: color-mix(in oklab, var(--color-indigo-600) 62%, #8fb6ff);
+}
+
+.dark .cosmic-aurora {
+  opacity: calc(0.72 * var(--cosmic-aurora-intensity, 1));
+  mix-blend-mode: screen;
+}
+
+.cosmic-aurora__blob {
+  position: absolute;
+  display: block;
+  width: 74vmax;
+  height: 74vmax;
+  border-radius: 50%;
+  filter: blur(58px);
+  opacity: var(--cosmic-o, 0.5);
+  transform: translate3d(calc(var(--cosmic-x) * 26vmax), calc(var(--cosmic-y) * 20vmax), 0)
+    scale(var(--cosmic-s, 1));
+  will-change: transform, opacity;
+  animation-name: cosmic-drift-a;
+  animation-duration: 38s;
+  animation-timing-function: var(--ease-in-out-soft, ease-in-out);
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+
+/* — Медь (brand-500): основной тёплый акцент, слева сверху — */
+.cosmic-aurora__blob--copper {
+  left: -14%;
+  top: -22%;
+  --cosmic-o: 0.5;
+  background: radial-gradient(
+    circle at 50% 50%,
+    color-mix(in oklab, var(--color-brand-500) 42%, transparent) 0%,
+    color-mix(in oklab, var(--color-brand-600) 20%, transparent) 40%,
+    transparent 70%
+  );
+}
+.dark .cosmic-aurora__blob--copper {
+  --cosmic-o: 0.62;
+}
+
+/* — Тлеющие угли (brand-700): глубина справа снизу — */
+.cosmic-aurora__blob--ember {
+  left: 48%;
+  top: 34%;
+  width: 62vmax;
+  height: 62vmax;
+  --cosmic-o: 0.34;
+  animation-name: cosmic-drift-b;
+  animation-duration: 47s;
+  animation-delay: -11s;
+  background: radial-gradient(
+    circle at 50% 50%,
+    color-mix(in oklab, var(--color-brand-700) 34%, transparent) 0%,
+    color-mix(in oklab, var(--color-brand-800) 16%, transparent) 44%,
+    transparent 72%
+  );
+}
+
+/* — Холодный синий (небо): справа сверху — */
+.cosmic-aurora__blob--azure {
+  left: 52%;
+  top: -26%;
+  width: 68vmax;
+  height: 68vmax;
+  --cosmic-o: 0.40;
+  animation-duration: 53s;
+  animation-delay: -21s;
+  background: radial-gradient(
+    circle at 50% 50%,
+    color-mix(in oklab, var(--cosmic-cold) 44%, transparent) 0%,
+    color-mix(in oklab, var(--color-indigo-600) 20%, transparent) 42%,
+    transparent 72%
+  );
+}
+
+/* — Индиго (глубокий космос): слева снизу — */
+.cosmic-aurora__blob--indigo {
+  left: -20%;
+  top: 46%;
+  width: 58vmax;
+  height: 58vmax;
+  --cosmic-o: 0.30;
+  animation-name: cosmic-drift-b;
+  animation-duration: 61s;
+  animation-delay: -34s;
+  animation-direction: alternate-reverse;
+  background: radial-gradient(
+    circle at 50% 50%,
+    color-mix(in oklab, var(--color-indigo-600) 30%, transparent) 0%,
+    color-mix(in oklab, var(--color-indigo-700) 14%, transparent) 46%,
+    transparent 74%
+  );
+}
+
+@keyframes cosmic-drift-a {
+  0% {
+    --cosmic-x: 0;
+    --cosmic-y: 0;
+    --cosmic-s: 1;
+  }
+  33% {
+    --cosmic-x: 0.12;
+    --cosmic-y: 0.1;
+    --cosmic-s: 1.09;
+  }
+  66% {
+    --cosmic-x: -0.08;
+    --cosmic-y: 0.16;
+    --cosmic-s: 0.95;
+  }
+  100% {
+    --cosmic-x: 0.16;
+    --cosmic-y: -0.09;
+    --cosmic-s: 1.05;
+  }
+}
+
+@keyframes cosmic-drift-b {
+  0% {
+    --cosmic-x: 0;
+    --cosmic-y: 0;
+    --cosmic-s: 1;
+  }
+  40% {
+    --cosmic-x: -0.14;
+    --cosmic-y: -0.08;
+    --cosmic-s: 1.06;
+  }
+  75% {
+    --cosmic-x: 0.06;
+    --cosmic-y: -0.15;
+    --cosmic-s: 0.93;
+  }
+  100% {
+    --cosmic-x: -0.1;
+    --cosmic-y: 0.12;
+    --cosmic-s: 1.03;
+  }
+}
+
+/* =========================== SCROLL PROGRESS ============================ */
+/* Тонкая полоска чтения. Её ширина — CSS-переменная, которую пишет rAF-цикл
+   (spring-lerp), поэтому браузеру не нужно пересчитывать layout. */
+
+.cosmic-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--cosmic-progress-height, 3px);
+  z-index: 60; /* над sticky-хедером (z-50), но pointer-events: none */
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.45s var(--ease-out-soft, ease-out);
+}
+
+.cosmic-progress[data-active='true'] {
+  opacity: 1;
+}
+
+.cosmic-progress__bar {
+  height: 100%;
+  width: 100%;
+  transform-origin: 0 50%;
+  transform: scaleX(var(--cosmic-progress, 0));
+  background: linear-gradient(
+    90deg,
+    var(--color-brand-600),
+    var(--color-brand-400) 58%,
+    var(--color-brand-500)
+  );
+  box-shadow: 0 0 10px -2px color-mix(in oklab, var(--color-brand-500) 70%, transparent);
+  will-change: transform;
+}
+
+.dark .cosmic-progress__bar {
+  box-shadow: 0 0 14px -1px color-mix(in oklab, var(--color-brand-400) 60%, transparent);
+}
+
+/* ============================== МОБИЛЬНЫЕ =============================== */
+/* Слабые устройства: меньше размытия, два пятна, полоска тоньше. */
+@media (width < 768px) {
+  .cosmic-aurora__blob {
+    filter: blur(42px);
+  }
+  .cosmic-aurora__blob--ember,
+  .cosmic-aurora__blob--indigo {
+    display: none;
+  }
+  .cosmic-progress {
+    --cosmic-progress-height: 2px;
+  }
+}
+
+/* =========================== МЕНЬШЕ ДВИЖЕНИЯ ============================ */
+/* Полностью статичный, но красивый кадр: пятна на своих местах, без дрейфа. */
+@media (prefers-reduced-motion: reduce) {
+  .cosmic-aurora__blob {
+    animation: none !important;
+    transform: none;
+    will-change: auto;
+  }
+  .cosmic-aurora__blob--ember {
+    --cosmic-x: -0.05;
+    --cosmic-y: -0.04;
+  }
+  .cosmic-aurora__blob--azure {
+    --cosmic-x: 0.06;
+    --cosmic-y: 0.03;
+  }
+  .cosmic-progress,
+  .cosmic-canvas {
+    transition: none !important;
+  }
+  .cosmic-progress__bar {
+    will-change: auto;
+  }
+}

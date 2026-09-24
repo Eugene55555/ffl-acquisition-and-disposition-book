@@ -1,6 +1,7 @@
 import { type Locale } from '@/src/i18n/settings';
 import { BOOKS, formatLabel, cheapestEdition, bookUrl } from '@/src/lib/products';
 import Link from 'next/link';
+import { Tilt } from '@/components/Motion';
 
 export function BookCard({ book, locale }: { book: (typeof BOOKS)[number]; locale: Locale }) {
   const text = book[locale];
@@ -8,7 +9,8 @@ export function BookCard({ book, locale }: { book: (typeof BOOKS)[number]; local
   const href = bookUrl(book, locale);
 
   return (
-    <Link href={href} className="book-card group" aria-label={text.title}>
+    <Tilt innerClassName="rounded-[24px]" className="h-full">
+      <Link href={href} className="book-card group h-full" aria-label={text.title}>
       <div className="book-card__media">
         <span className="book-card__badge">{book.regulation}</span>
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -34,7 +36,8 @@ export function BookCard({ book, locale }: { book: (typeof BOOKS)[number]; local
           </span>
         </div>
       </div>
-    </Link>
+      </Link>
+    </Tilt>
   );
 }
 

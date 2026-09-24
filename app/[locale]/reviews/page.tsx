@@ -5,6 +5,7 @@ import { BOOKS, cheapestEdition, formatLabel } from '@/src/lib/products';
 import { alternatesFor, OG_IMAGE } from '@/src/lib/seo';
 import { Reveal } from '@/components/Reveal';
 import { Comments } from '@/components/Comments';
+import { ReviewSystem } from '@/components/ReviewSystem';
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -88,6 +89,13 @@ export default function ReviewsPage({ params }: { params: { locale: string } }) 
               })}
             </div>
           </Reveal>
+        </div>
+      </section>
+
+      {/* ==== Отзывы покупателей (без логина и регистрации) ==== */}
+      <section className="section border-t border-sand-200 dark:border-sand-800">
+        <div className="shell max-w-4xl">
+          <ReviewSystem locale={locale} />
         </div>
       </section>
 

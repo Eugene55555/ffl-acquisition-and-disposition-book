@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import './globals.css';
 import './redesign.css';
+import { CosmicBackground } from '@/components/Cosmic';
 import { defaultLocale } from '@/src/i18n/settings';
 import { siteUrl } from '@/src/lib/seo';
 
@@ -52,6 +53,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           Skip to content
         </a>
         {children}
+        <CosmicBackground />
         {process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN && (
           <script
             defer

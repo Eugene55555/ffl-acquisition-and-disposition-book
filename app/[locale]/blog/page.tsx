@@ -47,7 +47,7 @@ export default function BlogIndex({ params }: { params: { locale: string } }) {
           <Reveal>
             <p className="eyebrow">{t(locale, 'nav.blog')}</p>
             <h1 className="display mt-4 text-4xl text-sand-900 sm:text-5xl dark:text-sand-50">
-              {locale === 'ru' ? 'Заметки об учёте и соответствии' : 'Notes on record-keeping'}
+              Notes on record-keeping
             </h1>
             <p className="lede mt-6">{t(locale, 'seo.blog.desc')}</p>
           </Reveal>
@@ -63,9 +63,7 @@ export default function BlogIndex({ params }: { params: { locale: string } }) {
         <div className="shell">
           {posts.length === 0 && (
             <p className="text-sm text-sand-500 dark:text-sand-400">
-              {locale === 'ru'
-                ? 'Пока записей нет. Добавь .md файл в content/posts/.'
-                : 'No posts yet. Add a .md file in content/posts/.'}
+              No posts yet. Add a .md file in content/posts/.
             </p>
           )}
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -94,7 +92,7 @@ export default function BlogIndex({ params }: { params: { locale: string } }) {
                     </div>
                   )}
                   <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-600 dark:text-brand-400">
-                    {locale === 'ru' ? 'Читать' : 'Read'}
+                    Read
                     <svg viewBox="0 0 24 24" className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                       <path d="M5 12h14M13 6l6 6-6 6" />
                     </svg>

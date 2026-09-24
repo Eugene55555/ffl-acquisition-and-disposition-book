@@ -30,7 +30,7 @@ export function Breadcrumbs({ locale, items }: { locale: Locale; items: Crumb[] 
             href={`/${locale}/`}
             className="font-medium text-gray-500 transition hover:text-orange-500 dark:text-gray-400"
           >
-            {locale === 'ru' ? 'Главная' : 'Home'}
+            Home
           </Link>
         </li>
         {items.map((c, i) => {

@@ -322,7 +322,6 @@ export function bookUrl(book: Book, locale: Locale): string {
 export function formatLabel(format: Format, locale: Locale): string {
   const map: Record<Locale, Record<Format, string>> = {
     en: { paperback: 'Paperback', hardcover: 'Hardcover' },
-    ru: { paperback: 'Бумажная', hardcover: 'Твёрдый переплёт' },
   };
   return map[locale][format];
 }
@@ -330,7 +329,6 @@ export function formatLabel(format: Format, locale: Locale): string {
 export function seriesLabel(series: Book['series'], locale: Locale): string {
   const map: Record<Locale, Record<Book['series'], string>> = {
     en: { classic: 'Classic edition', expanded: 'Expanded edition', landscape: 'Landscape edition' },
-    ru: { classic: 'Классическое издание', expanded: 'Расширенное издание', landscape: 'Альбомное издание' },
   };
   return map[locale][series];
 }

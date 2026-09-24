@@ -138,7 +138,7 @@ export default function Home({ params }: { params: { locale: string } }) {
         b[locale].blurb.length > 150 ? `${b[locale].blurb.slice(0, 150).trimEnd()}…` : b[locale].blurb,
       specs: [
         b.trim,
-        `${b.pages} ${locale === 'ru' ? 'стр.' : 'pages'}`,
+        `${b.pages} pages`,
         b.regulation,
         formatLabel(e.format, locale),
       ],
@@ -250,7 +250,7 @@ export default function Home({ params }: { params: { locale: string } }) {
                   {t(locale, 'book.inStock')}
                 </span>
                 <span className="chip">27 CFR § 478.125</span>
-                <span className="chip">{locale === 'ru' ? 'с Amazon' : 'ships from Amazon'}</span>
+                <span className="chip">ships from Amazon</span>
               </div>
             </Reveal>
           </div>
@@ -279,9 +279,7 @@ export default function Home({ params }: { params: { locale: string } }) {
             <div className="mx-auto max-w-2xl text-center">
               <p className="eyebrow">{t(locale, 'home.collection')}</p>
               <h2 className="display mt-4 text-3xl text-sand-900 sm:text-4xl dark:text-sand-50">
-                {locale === 'ru'
-                  ? 'Все шесть изданий — покрутите, чтобы рассмотреть'
-                  : 'All six editions — spin them to look closer'}
+                All six editions — spin them to look closer
               </h2>
             </div>
           </Reveal>
@@ -389,7 +387,7 @@ export default function Home({ params }: { params: { locale: string } }) {
             <div>
               <p className="eyebrow">{t(locale, 'home.faqTitle')}</p>
               <h2 className="display mt-4 text-4xl text-sand-900 dark:text-sand-50">
-                {locale === 'ru' ? 'Коротко о главном' : 'The short answers'}
+                The short answers
               </h2>
               <p className="mt-5 text-sm leading-relaxed text-sand-500 dark:text-sand-400">
                 {t(locale, 'footer.disclaimer')}
@@ -412,7 +410,7 @@ export default function Home({ params }: { params: { locale: string } }) {
                   {t(locale, 'home.latest')}
                 </h2>
                 <Link href={`/${locale}/blog/`} className="link-sweep text-sm text-brand-600 dark:text-brand-400">
-                  {locale === 'ru' ? 'Все записи' : 'All posts'}
+                  All posts
                 </Link>
               </div>
             </Reveal>
@@ -434,7 +432,7 @@ export default function Home({ params }: { params: { locale: string } }) {
                       </p>
                     )}
                     <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-600 dark:text-brand-400">
-                      {locale === 'ru' ? 'Читать' : 'Read'}
+                      Read
                       <ArrowIcon className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
                     </span>
                   </Link>

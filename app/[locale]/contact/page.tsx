@@ -61,7 +61,7 @@ export default function ContactPage({ params }: { params: { locale: string } }) 
                 <label htmlFor="contact-name" className={LABEL}>
                   {t(locale, 'contact.name')}
                 </label>
-                <input id="contact-name" name="name" required className={FIELD} placeholder={locale === 'ru' ? 'Как к вам обращаться' : 'What should we call you'} />
+                <input id="contact-name" name="name" required className={FIELD} placeholder="What should we call you" />
               </div>
               <div>
                 <label htmlFor="contact-email" className={LABEL}>
@@ -79,7 +79,7 @@ export default function ContactPage({ params }: { params: { locale: string } }) 
                   rows={5}
                   required
                   className={FIELD}
-                  placeholder={locale === 'ru' ? 'Вопрос о книге, оптовый заказ…' : 'A question about a book, a bulk order…'}
+                  placeholder="A question about a book, a bulk order..."
                 />
               </div>
               <button type="submit" className="btn-primary w-full sm:w-auto">

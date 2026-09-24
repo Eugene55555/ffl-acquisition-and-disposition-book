@@ -6,7 +6,6 @@ import { usePathname } from 'next/navigation';
 import { type Locale } from '@/src/i18n/settings';
 import { t } from '@/src/i18n/ui';
 import { BOOKS, cheapestEdition, bookUrl, formatLabel } from '@/src/lib/products';
-import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { ThemeToggle } from '@/components/ThemeToggle';
 
 const NAV = [
@@ -123,11 +122,10 @@ export function Header({ locale }: { locale: Locale }) {
   };
 
   const navLink = (href: string) =>
-    `relative rounded-full px-3.5 py-2 text-sm font-medium transition-colors duration-300 ${
-      isActive(href)
-        ? 'text-brand-600 dark:text-brand-400'
-        : 'text-sand-600 hover:text-sand-900 dark:text-sand-300 dark:hover:text-white'
-    }`;
+    'relative rounded-full px-3.5 py-2 text-sm font-medium transition-colors duration-300 ' +
+    (isActive(href)
+      ? 'text-brand-600 dark:text-brand-400'
+      : 'text-sand-600 hover:text-sand-900 dark:text-sand-300 dark:hover:text-white');
 
   return (
     <>
@@ -241,9 +239,6 @@ export function Header({ locale }: { locale: Locale }) {
             >
               {t(locale, 'nav.login')}
             </Link>
-            <div className="hidden lg:block">
-              <LanguageSwitcher locale={locale} />
-            </div>
             <ThemeToggle />
             <Link href={`/${locale}/buy/`} className="btn-primary hidden !px-5 !py-2.5 !text-[13px] lg:inline-flex">
               {t(locale, 'nav.buy')}
@@ -269,7 +264,7 @@ export function Header({ locale }: { locale: Locale }) {
             className="msheet lg:hidden"
             role="dialog"
             aria-modal="true"
-            aria-label={locale === 'ru' ? 'Меню' : 'Menu'}
+            aria-label="Menu"
           >
             <div className="msheet-top">
               <span className="flex items-center gap-2.5">
@@ -281,7 +276,7 @@ export function Header({ locale }: { locale: Locale }) {
               <button
                 type="button"
                 onClick={() => setOpen(false)}
-                aria-label={locale === 'ru' ? 'Закрыть' : 'Close'}
+                aria-label="Close"
                 className="flex h-11 w-11 items-center justify-center rounded-full border border-sand-200 text-sand-600 transition-colors hover:border-brand-400 hover:text-brand-500 dark:border-sand-700 dark:text-sand-300"
               >
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" className="h-5 w-5" aria-hidden="true">
@@ -343,7 +338,6 @@ export function Header({ locale }: { locale: Locale }) {
             </nav>
 
               <div className="msheet-foot">
-                <LanguageSwitcher locale={locale} variant="inline" />
                 <Link href={`/${locale}/buy/`} onClick={() => setOpen(false)} className="btn-primary w-full justify-center">
                   {t(locale, 'nav.buy')}
                 </Link>

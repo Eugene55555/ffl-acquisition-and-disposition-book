@@ -167,7 +167,7 @@ export function BookCarousel({
         <div className="carousel-floor" aria-hidden="true" />
       </div>
       <p className="carousel-hint">
-        {hint ?? (locale === 'ru' ? 'Потяните, чтобы прокрутить · ← →' : 'Drag to spin · ← →')}
+        Drag to spin · ← →
       </p>
     </div>
   );

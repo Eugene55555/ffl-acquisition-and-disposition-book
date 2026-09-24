@@ -104,9 +104,9 @@ export const REVIEW_SETTINGS = {
 // Книги, по которым можно фильтровать отзывы. slug совпадает с src/lib/products.ts,
 // поэтому здесь намеренно нет импорта каталога (этот файл попадает в клиентский бандл).
 export const REVIEW_BOOKS: { slug: string; label: Record<Locale, string> }[] = [
-  { slug: 'ffl-acquisition-disposition-120', label: { en: 'A&D Book — 120 pages', ru: 'Журнал A&D — 120 страниц' } },
-  { slug: 'ffl-acquisition-disposition-200', label: { en: 'A&D Book — 200 pages', ru: 'Журнал A&D — 200 страниц' } },
-  { slug: 'firearms-dealer-ad-log-landscape', label: { en: 'A&D Log — landscape', ru: 'Журнал A&D — альбомный' } },
+  { slug: 'ffl-acquisition-disposition-120', label: { en: 'A&D Book — 120 pages' } },
+  { slug: 'ffl-acquisition-disposition-200', label: { en: 'A&D Book — 200 pages' } },
+  { slug: 'firearms-dealer-ad-log-landscape', label: { en: 'A&D Log — landscape' } },
 ];
 
 /** Человекочитаемое название книги по slug (или undefined, если slug неизвестен). */

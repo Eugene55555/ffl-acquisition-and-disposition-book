@@ -37,7 +37,7 @@ export function PostTOC({ locale }: { locale: Locale }) {
     <aside className="hidden xl:block">
       <div className="sticky top-24">
         <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-gray-400 dark:text-gray-500">
-          {locale === 'ru' ? 'Содержание' : 'On this page'}
+          On this page
         </p>
         <nav className="space-y-1 border-l border-gray-200 dark:border-gray-800">
           {headings.map((h) => (

@@ -282,7 +282,7 @@ const ru: Dict = {
   'seo.login.desc': 'Панель удобства владельца сайта.',
 };
 
-const dicts: Record<Locale, Dict> = { en, ru };
+const dicts: Record<Locale, Dict> = { en };
 
 export function t(locale: Locale, key: string): string {
   return dicts[locale]?.[key] ?? dicts.en[key] ?? key;

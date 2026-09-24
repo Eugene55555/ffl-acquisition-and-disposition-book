@@ -36,17 +36,6 @@ const COPY = {
     goTo: 'Show edition',
     reduce: 'Spin it',
   },
-  ru: {
-    spin: 'Потяните, чтобы покрутить',
-    paused: 'Пауза',
-    play: 'Авто-вращение',
-    details: 'Открыть издание',
-    buy: 'Купить на Amazon',
-    prev: 'Предыдущее издание',
-    next: 'Следующее издание',
-    goTo: 'Показать издание',
-    reduce: 'Покрутить',
-  },
 } as const;
 
 /**
@@ -72,9 +61,10 @@ export function BookShowcase({
   const [reduce, setReduce] = useState(false);
   const [spinOnce, setSpinOnce] = useState(false);
   const [dragging, setDragging] = useState(false);
+  const [dragStart, setDragStart] = useState<{ x: number; y: number } | null>(null);
 
   const stageRef = useRef<HTMLDivElement>(null);
-  const dragRef = useRef({ active: false, startX: 0, moved: false });
+  const dragRef = useRef({ active: false, startY: 0, moved: false });
   const visibleRef = useRef(false);
   const count = Math.max(1, items.length);
 
@@ -144,14 +134,6 @@ export function BookShowcase({
     typeof window !== 'undefined' &&
     window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
-  const onPointerDown = (e: ReactPointerEvent<HTMLDivElement>) => {
-    const stage = stageRef.current;
-    dragRef.current = { active: true, startX: e.clientX, moved: false };
-    setDragging(true);
-    stage?.setAttribute('data-snap', 'false');
-    stage?.setPointerCapture?.(e.pointerId);
-  };
-
   const onPointerMove = (e: ReactPointerEvent<HTMLDivElement>) => {
     const stage = stageRef.current;
     if (!stage) return;
@@ -165,10 +147,36 @@ export function BookShowcase({
       stage.style.setProperty('--bk-rz', `${(nx * 2.5).toFixed(2)}deg`);
       return;
     }
-    const dx = e.clientX - dragRef.current.startX;
-    if (Math.abs(dx) > 8) dragRef.current.moved = true;
-    const dy = Math.max(-70, Math.min(70, dx * 0.55));
-    stage.style.setProperty('--bk-dy', `${dy.toFixed(2)}deg`);
+    const dy = e.clientY - dragRef.current.startY;
+    if (Math.abs(dy) > 8) dragRef.current.moved = true;
+    const rot = Math.max(-70, Math.min(70, dy * 0.55));
+    stage.style.setProperty('--bk-dy', `${rot.toFixed(2)}deg`);
+  };
+
+  // Горизонтальный свайп — перелистывание книг (независимо от вертикального драга вращения)
+  const swipeRef = useRef({ startX: 0, startY: 0, tracked: false });
+  
+  const onPointerDown = (e: ReactPointerEvent<HTMLDivElement>) => {
+    const stage = stageRef.current;
+    dragRef.current = { active: true, startY: e.clientY, moved: false };
+    setDragStart({ x: e.clientX, y: e.clientY });
+    swipeRef.current = { startX: e.clientX, startY: e.clientY, tracked: true };
+    setDragging(true);
+    stage?.setAttribute('data-snap', 'false');
+    stage?.setPointerCapture?.(e.pointerId);
+  };
+
+  const onPointerUp = (e: ReactPointerEvent<HTMLDivElement>) => {
+    // Обрабатываем горизонтальный свайп, если вертикального драга не было
+    if (swipeRef.current.tracked && !dragRef.current.moved) {
+      const dx = e.clientX - swipeRef.current.startX;
+      const dy = e.clientY - swipeRef.current.startY;
+      if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40) {
+        go(dx < 0 ? 1 : -1);
+      }
+    }
+    endDrag();
+    swipeRef.current.tracked = false;
   };
 
   const endDrag = () => {
@@ -176,6 +184,7 @@ export function BookShowcase({
     const moved = dragRef.current.moved;
     dragRef.current.active = false;
     setDragging(false);
+    setDragStart(null);
     if (!stage) return;
     stage.setAttribute('data-snap', 'true');
     const dy = parseFloat(stage.style.getPropertyValue('--bk-dy') || '0');
@@ -223,7 +232,7 @@ export function BookShowcase({
           data-spin={spinOnce ? 'true' : 'false'}
           onPointerDown={onPointerDown}
           onPointerMove={onPointerMove}
-          onPointerUp={endDrag}
+          onPointerUp={onPointerUp}
           onPointerCancel={endDrag}
           onPointerLeave={onPointerLeave}
           onKeyDown={onKeyDown}
@@ -280,7 +289,7 @@ export function BookShowcase({
       <div className="bk-panel" aria-live="polite">
         <div key={item.slug} className="bk-panel-in">
           <p className="bk-kicker">
-            {label ?? (locale === 'ru' ? 'Издание' : 'Edition')} {pad(active + 1)} / {pad(count)}
+            Edition
           </p>
           <h3 className="bk-title mt-2">{item.title}</h3>
           {item.subtitle && <p className="bk-sub mt-2.5">{item.subtitle}</p>}

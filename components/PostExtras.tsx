@@ -59,13 +59,13 @@ export function ShareButtons({ locale, title }: { locale: Locale; title: string 
   return (
     <div className="mt-10 flex flex-wrap items-center gap-2 border-t border-gray-200 pt-6 dark:border-gray-800">
       <span className="mr-1 text-sm font-medium text-gray-500 dark:text-gray-400">
-        {locale === 'ru' ? 'Поделиться:' : 'Share:'}
+        Share:
       </span>
       <button type="button" className={base} onClick={tweet}>
-        𝕏 {locale === 'ru' ? 'Твит' : 'Tweet'}
+        Tweet
       </button>
       <button type="button" className={base} onClick={copy}>
-        {copied ? (locale === 'ru' ? 'Скопировано!' : 'Copied!') : locale === 'ru' ? 'Копировать ссылку' : 'Copy link'}
+        {copied ? 'Copied!' : 'Copy link'}
       </button>
     </div>
   );

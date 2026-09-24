@@ -28,7 +28,7 @@ export function RelatedPosts({
 
   if (related.length === 0) return null;
 
-  const label = locale === 'ru' ? 'Читайте также' : 'Related posts';
+  const label = 'Related posts';
 
   return (
     <section className="mt-12 border-t border-gray-200 pt-8 dark:border-gray-800">

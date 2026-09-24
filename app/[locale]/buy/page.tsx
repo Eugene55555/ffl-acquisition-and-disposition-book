@@ -119,7 +119,7 @@ export default function BuyPage({ params }: { params: { locale: string } }) {
                       href={bookUrl(book, locale)}
                       className="link-sweep mt-6 inline-flex text-sm font-semibold text-brand-600 dark:text-brand-400"
                     >
-                      {locale === 'ru' ? 'Полное описание книги' : 'Full book details'} →
+                      Full book details →
                     </Link>
                   </div>
                 </article>
@@ -134,7 +134,7 @@ export default function BuyPage({ params }: { params: { locale: string } }) {
         <div className="shell max-w-4xl">
           <Reveal>
             <h2 className="display text-3xl text-sand-900 sm:text-4xl dark:text-sand-50">
-              {locale === 'ru' ? 'Сравнение' : 'Compare'}
+              Compare
             </h2>
           </Reveal>
           <Reveal delay={1}>
@@ -153,7 +153,7 @@ export default function BuyPage({ params }: { params: { locale: string } }) {
                       { k: t(locale, 'book.pages'), v: String(book.pages) },
                       {
                         k: t(locale, 'book.entries'),
-                        v: book.entries ? book.entries.toLocaleString(locale === 'ru' ? 'ru-RU' : 'en-US') : '—',
+                        v: book.entries ? book.entries.toLocaleString('en-US') : '—',
                       },
                       { k: t(locale, 'book.trim'), v: book.trim },
                     ].map((row) => (
@@ -164,7 +164,7 @@ export default function BuyPage({ params }: { params: { locale: string } }) {
                     ))}
                     <div className="col-span-2">
                       <dt className="font-mono text-[11px] uppercase tracking-[0.14em] text-sand-400">
-                        {locale === 'ru' ? 'Цена' : 'Price'}
+                        Price
                       </dt>
                       <dd className="mt-1 space-y-0.5 font-mono text-sm text-sand-700 dark:text-sand-300">
                         {book.editions.map((e) => (
@@ -196,7 +196,7 @@ export default function BuyPage({ params }: { params: { locale: string } }) {
                       {t(locale, 'book.trim')}
                     </th>
                     <th className="px-6 py-4 text-right font-mono text-[10px] uppercase tracking-[0.16em] text-sand-400">
-                      {locale === 'ru' ? 'Цена' : 'Price'}
+                      Price
                     </th>
                   </tr>
                 </thead>
@@ -210,7 +210,7 @@ export default function BuyPage({ params }: { params: { locale: string } }) {
                       </td>
                       <td className="px-6 py-4 text-sand-600 dark:text-sand-400">{book.pages}</td>
                       <td className="px-6 py-4 text-sand-600 dark:text-sand-400">
-                        {book.entries ? book.entries.toLocaleString(locale === 'ru' ? 'ru-RU' : 'en-US') : '—'}
+                        {book.entries ? book.entries.toLocaleString('en-US') : '—'}
                       </td>
                       <td className="px-6 py-4 text-sand-600 dark:text-sand-400">{book.trim}</td>
                       <td className="px-6 py-4 text-right font-mono text-sand-700 dark:text-sand-300">
@@ -238,5 +238,5 @@ export default function BuyPage({ params }: { params: { locale: string } }) {
 }
 
 function localTitle(locale: Locale): string {
-  return locale === 'ru' ? 'Три книги. Шесть изданий.' : 'Three books. Six editions.';
+  return 'Three books. Six editions.';
 }

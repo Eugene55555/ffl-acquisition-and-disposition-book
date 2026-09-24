@@ -84,7 +84,7 @@ export default async function PostPage({ params }: { params: { locale: string; s
                 <p className="mt-4 font-mono text-[11px] uppercase tracking-[0.16em] text-sand-400">
                   {t(locale, 'post.published')}: {post.date}
                   {post.author ? ` · ${t(locale, 'post.by')} ${post.author}` : ''}
-                  {post.readingTime ? ` · ${post.readingTime} ${locale === 'ru' ? 'чтения' : 'read'}` : ''}
+                  {post.readingTime ? ` · ${post.readingTime} read` : ''}
                 </p>
                 {post.tags && post.tags.length > 0 && (
                   <div className="mt-5 flex flex-wrap gap-2">
@@ -111,7 +111,7 @@ export default async function PostPage({ params }: { params: { locale: string; s
               <Newsletter locale={locale} />
               <div className="giscus-slot mt-14 border-t border-sand-200 pt-10 dark:border-sand-800">
                 <h2 className="display mb-6 text-2xl text-sand-900 dark:text-sand-50">
-                  {locale === 'ru' ? 'Обсудить запись' : 'Discuss this post'}
+                  Discuss this post
                 </h2>
                 <Comments locale={locale} />
               </div>

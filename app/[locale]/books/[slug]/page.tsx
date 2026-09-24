@@ -63,7 +63,7 @@ export default function BookPage({ params }: { params: { locale: string; slug: s
 
   const specs: { label: string; value: string }[] = [
     { label: t(locale, 'book.pages'), value: String(book.pages) },
-    ...(book.entries ? [{ label: t(locale, 'book.entries'), value: book.entries.toLocaleString(locale === 'ru' ? 'ru-RU' : 'en-US') }] : []),
+    ...(book.entries ? [{ label: t(locale, 'book.entries'), value: book.entries.toLocaleString('en-US') }] : []),
     { label: t(locale, 'book.trim'), value: book.trim },
     { label: t(locale, 'book.binding'), value: book.editions.map((e) => formatLabel(e.format, locale)).join(' · ') },
     { label: t(locale, 'book.regulation'), value: book.regulation },
@@ -208,7 +208,7 @@ export default function BookPage({ params }: { params: { locale: string; slug: s
             <div>
               <p className="eyebrow">{t(locale, 'book.inside')}</p>
               <h2 className="display mt-4 text-3xl text-sand-900 sm:text-4xl dark:text-sand-50">
-                {book.pages} {locale === 'ru' ? 'страниц готового учёта' : 'pages of ready layout'}
+                pages of ready layout
               </h2>
               <ul className="mt-8 space-y-4">
                 {text.inside.map((row) => (
@@ -310,7 +310,7 @@ export default function BookPage({ params }: { params: { locale: string; slug: s
                         {b[locale].blurb}
                       </p>
                       <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-600 dark:text-brand-400">
-                        {locale === 'ru' ? 'Подробнее' : 'Details'}
+                        Details
                         <svg viewBox="0 0 24 24" className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                           <path d="M5 12h14M13 6l6 6-6 6" />
                         </svg>

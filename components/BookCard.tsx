@@ -26,10 +26,10 @@ export function BookCard({ book, locale }: { book: (typeof BOOKS)[number]; local
         </p>
         <div className="mt-5 flex items-center justify-between border-t border-sand-200 pt-4 dark:border-sand-800">
           <span className="font-mono text-sm text-sand-500 dark:text-sand-400">
-            {locale === 'ru' ? 'от' : 'from'} {cheapest.price}
+            from {cheapest.price}
           </span>
           <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-600 dark:text-brand-400">
-            {locale === 'ru' ? 'Подробнее' : 'Details'}
+            Details
             <svg viewBox="0 0 24 24" className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <path d="M5 12h14M13 6l6 6-6 6" />
             </svg>

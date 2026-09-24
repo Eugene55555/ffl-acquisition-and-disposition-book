@@ -34,7 +34,7 @@ export function Search({ locale, items }: { locale: Locale; items: SearchItem[] 
           type="search"
           value={q}
           onChange={(e) => setQ(e.target.value)}
-          placeholder={locale === 'ru' ? 'Поиск по блогу…' : 'Search the blog…'}
+          placeholder="Search the blog..."
           className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-900 focus:border-orange-500 focus:ring-orange-500 dark:border-gray-700 dark:bg-gray-900 dark:text-white"
         />
       </div>
@@ -43,7 +43,7 @@ export function Search({ locale, items }: { locale: Locale; items: SearchItem[] 
         <ul className="mt-4 space-y-2">
           {results.length === 0 && (
             <li className="text-sm text-gray-500 dark:text-gray-400">
-              {locale === 'ru' ? 'Ничего не найдено.' : 'No results.'}
+              No results.
             </li>
           )}
           {results.map((r) => (

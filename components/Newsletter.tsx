@@ -30,10 +30,10 @@ export function Newsletter({ locale }: { locale: Locale }) {
     setDone(true);
   }
 
-  const title = locale === 'ru' ? 'Подписка на новости' : 'Subscribe to the newsletter';
-  const sub = locale === 'ru' ? 'Новые посты без спама.' : 'New posts, no spam.';
-  const ph = locale === 'ru' ? 'you@example.com' : 'you@example.com';
-  const cta = locale === 'ru' ? 'Подписаться' : 'Subscribe';
+  const title = 'Subscribe to the newsletter';
+  const sub = 'New posts, no spam.';
+  const ph = 'you@example.com';
+  const cta = 'Subscribe';
 
   return (
     <section className="mt-12 rounded-2xl border border-gray-200 bg-gray-50 p-8 dark:border-gray-800 dark:bg-gray-900">

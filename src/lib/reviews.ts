@@ -145,7 +145,7 @@ export function formatReviewDate(date: string, locale: Locale): string {
   const parsed = new Date(date);
   if (Number.isNaN(parsed.getTime())) return date;
   try {
-    return new Intl.DateTimeFormat(locale === 'ru' ? 'ru-RU' : 'en-US', {
+    return new Intl.DateTimeFormat('en-US', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
@@ -356,7 +356,7 @@ export function buildOwnerEmail(
   email: string,
   bookLabel?: string,
 ): OwnerEmail {
-  const ru = locale === 'ru';
+  const ru = false;
   const rating = toStarRating(draft.rating);
   const date = new Date().toISOString().slice(0, 10);
 

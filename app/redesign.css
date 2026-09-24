@@ -95,6 +95,8 @@
   animation: bkSpin var(--bk-dur, 20s) linear infinite;
 }
 .bk-stage[data-paused='true'] .bk-spin { animation-play-state: paused; }
+/* Пока книгу крутят рукой — автовращение стоит, иначе протяг «не слушается». */
+.bk-stage[data-dragging='true'] .bk-spin { animation-play-state: paused; }
 /* Пауза при наведении — только там, где есть настоящий курсор.
    На тач-экранах :hover «залипает», из-за чего вращение раньше умирало. */
 @media (hover: hover) and (pointer: fine) {
@@ -128,6 +130,9 @@
   height: var(--bk-h);
   transform-style: preserve-3d;
 }
+/* Палец на самой книге отдаётся жесту (вращение/свайп), а не скроллу страницы.
+   Сцена вокруг сохраняет pan-y — страница листается, если тянуть мимо книги. */
+.bk-stage .bk { touch-action: none; }
 .bk-face {
   position: absolute;
   transform-style: preserve-3d;

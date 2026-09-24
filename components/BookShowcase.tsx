@@ -26,7 +26,7 @@ export type ShowcaseItem = {
 
 const COPY = {
   en: {
-    spin: 'Drag to spin',
+    spin: 'Drag to spin · swipe to change edition',
     paused: 'Paused',
     play: 'Auto-spin',
     details: 'See the book',
@@ -38,11 +38,31 @@ const COPY = {
   },
 } as const;
 
+/** Пиксели, после которых жест фиксирует ось: вверх/вниз — вращение, влево/вправо — свайп. */
+const AXIS_LOCK = 12;
+/** Минимальная длина горизонтального свайпа, чтобы сменить издание. */
+const SWIPE_MIN = 56;
+/** Длина вертикального протяга, до которой вращение идёт 1:0.62 без сопротивления. */
+const SPIN_SOFT = 90;
+
+/** Вертикальный протяг → угол поворота книги вокруг Y, с сопротивлением на краях. */
+function spinAngle(dy: number): number {
+  const sign = dy < 0 ? -1 : 1;
+  const mag = Math.abs(dy);
+  const deg = mag <= SPIN_SOFT ? mag * 0.62 : SPIN_SOFT * 0.62 + (mag - SPIN_SOFT) * 0.2;
+  return Math.max(-135, Math.min(135, sign * deg));
+}
+
 /**
  * Витрина изданий: настоящая 3D-книга (обложка, корешок с текстом, торец страниц)
  * + живая текстовая панель рядом.
  *
- * Вращение делает CSS-анимация на композиторе — она не зависит от JS и touch-событий,
+ * Жесты разведены по оси, а не по «кто первый успел»:
+ *   • протяг вверх/вниз  → книга вращается вокруг Y (автовращение на паузе, пока держишь);
+ *   • свайп влево/вправо → смена издания (порог 56px, ось зафиксирована).
+ * Вращение и смена издания больше не пересекаются: покрутил — издание не съехало.
+ *
+ * Автовращение делает CSS-анимация на композиторе — она не зависит от JS и touch-событий,
  * поэтому книга крутится и на телефоне (раньше вращение убивал «залипший» :hover).
  * Пауза при наведении включается только там, где есть настоящий курсор.
  */
@@ -61,10 +81,16 @@ export function BookShowcase({
   const [reduce, setReduce] = useState(false);
   const [spinOnce, setSpinOnce] = useState(false);
   const [dragging, setDragging] = useState(false);
-  const [dragStart, setDragStart] = useState<{ x: number; y: number } | null>(null);
 
   const stageRef = useRef<HTMLDivElement>(null);
-  const dragRef = useRef({ active: false, startY: 0, moved: false });
+  // axis === null, пока движение меньше AXIS_LOCK; дальше фиксируется один раз:
+  // 'y' — вращение (вверх/вниз), 'x' — свайп (влево/вправо).
+  const dragRef = useRef<{ active: boolean; axis: null | 'x' | 'y'; startX: number; startY: number }>({
+    active: false,
+    axis: null,
+    startX: 0,
+    startY: 0,
+  });
   const visibleRef = useRef(false);
   const count = Math.max(1, items.length);
 
@@ -137,9 +163,11 @@ export function BookShowcase({
   const onPointerMove = (e: ReactPointerEvent<HTMLDivElement>) => {
     const stage = stageRef.current;
     if (!stage) return;
-    if (!dragRef.current.active) {
+    const d = dragRef.current;
+
+    // Не тащим — легкий параллакс книги за курсором (только настоящая мышь).
+    if (!d.active) {
       if (!finePointer() || reduce) return;
-      // Лёгкий параллакс книги за курсором.
       const r = stage.getBoundingClientRect();
       const nx = (e.clientX - (r.left + r.width / 2)) / (r.width / 2);
       const ny = (e.clientY - (r.top + r.height / 2)) / (r.height / 2);
@@ -147,48 +175,54 @@ export function BookShowcase({
       stage.style.setProperty('--bk-rz', `${(nx * 2.5).toFixed(2)}deg`);
       return;
     }
-    const dy = e.clientY - dragRef.current.startY;
-    if (Math.abs(dy) > 8) dragRef.current.moved = true;
-    const rot = Math.max(-70, Math.min(70, dy * 0.55));
-    stage.style.setProperty('--bk-dy', `${rot.toFixed(2)}deg`);
+
+    const dx = e.clientX - d.startX;
+    const dy = e.clientY - d.startY;
+
+    // Ось жеста фиксируем один раз — дальше не переключаемся до отпускания.
+    if (!d.axis && Math.max(Math.abs(dx), Math.abs(dy)) > AXIS_LOCK) {
+      d.axis = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
+    }
+
+    // Вращение — только вертикальный протяг; горизонтальный жест книгу не крутит.
+    if (d.axis === 'y') {
+      stage.style.setProperty('--bk-dy', `${spinAngle(dy).toFixed(2)}deg`);
+    }
   };
 
-  // Горизонтальный свайп — перелистывание книг (независимо от вертикального драга вращения)
-  const swipeRef = useRef({ startX: 0, startY: 0, tracked: false });
-  
   const onPointerDown = (e: ReactPointerEvent<HTMLDivElement>) => {
     const stage = stageRef.current;
-    dragRef.current = { active: true, startY: e.clientY, moved: false };
-    setDragStart({ x: e.clientX, y: e.clientY });
-    swipeRef.current = { startX: e.clientX, startY: e.clientY, tracked: true };
+    dragRef.current = { active: true, axis: null, startX: e.clientX, startY: e.clientY };
     setDragging(true);
     stage?.setAttribute('data-snap', 'false');
-    stage?.setPointerCapture?.(e.pointerId);
+    try {
+      stage?.setPointerCapture?.(e.pointerId);
+    } catch {
+      // Pointer capture не критичен — жест всё равно отработает.
+    }
   };
 
   const onPointerUp = (e: ReactPointerEvent<HTMLDivElement>) => {
-    // Обрабатываем горизонтальный свайп, если вертикального драга не было
-    if (swipeRef.current.tracked && !dragRef.current.moved) {
-      const dx = e.clientX - swipeRef.current.startX;
-      const dy = e.clientY - swipeRef.current.startY;
-      if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40) {
+    const d = dragRef.current;
+    // Смену издания даёт только осознанный горизонтальный свайп.
+    if (d.active && d.axis === 'x') {
+      const dx = e.clientX - d.startX;
+      const dy = e.clientY - d.startY;
+      if (Math.abs(dx) >= SWIPE_MIN && Math.abs(dx) > Math.abs(dy) * 1.2) {
         go(dx < 0 ? 1 : -1);
       }
     }
     endDrag();
-    swipeRef.current.tracked = false;
   };
 
   const endDrag = () => {
     const stage = stageRef.current;
-    const moved = dragRef.current.moved;
     dragRef.current.active = false;
+    dragRef.current.axis = null;
     setDragging(false);
-    setDragStart(null);
     if (!stage) return;
     stage.setAttribute('data-snap', 'true');
-    const dy = parseFloat(stage.style.getPropertyValue('--bk-dy') || '0');
-    if (moved && Math.abs(dy) > 22) go(dy < 0 ? 1 : -1);
+    // Поворот, набранный протягом, мягко возвращается — книга снова смотрит обложкой вперёд.
     stage.style.setProperty('--bk-dy', '0deg');
   };
 
@@ -213,7 +247,6 @@ export function BookShowcase({
 
   const item = items[active];
   if (!item) return null;
-  const pad = (n: number) => String(n).padStart(2, '0');
   const floats = [item.specs[0], item.specs[1], item.price, item.specs[2]].filter(Boolean).slice(0, 4);
   const floatPos = ['tl', 'tr', 'bl', 'br'] as const;
 

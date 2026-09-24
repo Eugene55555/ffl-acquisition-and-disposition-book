@@ -7,3 +7,6 @@ next-env.d.ts
 
 # temp asset-gen files
 public/tmp-*.html
+
+# tsc --noEmit build info
+tsconfig.tsbuildinfo

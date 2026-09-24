@@ -8,7 +8,7 @@ import { BOOKS, bookUrl, cheapestEdition, formatLabel } from '@/src/lib/products
 import { Reveal } from '@/components/Reveal';
 import { Parallax } from '@/components/Parallax';
 import { BookGrid } from '@/components/BookCard';
-import { BookCarousel, type CarouselItem } from '@/components/BookCarousel';
+import { BookShowcase, type ShowcaseItem } from '@/components/BookShowcase';
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -128,12 +128,24 @@ export default function Home({ params }: { params: { locale: string } }) {
   const left = featured[0] ?? BOOKS[1];
   const right = BOOKS[2];
 
-  // Все шесть изданий (3 книги × 2 формата) — для 3D-карусели
-  const carouselItems: CarouselItem[] = BOOKS.flatMap((b) =>
+  // Все шесть изданий (3 книги × 2 формата) — для 3D-витрины
+  const showcaseItems: ShowcaseItem[] = BOOKS.flatMap((b) =>
     b.editions.map((e) => ({
+      slug: `${b.slug}-${e.format}`,
       cover: e.cover,
-      title: `${b[locale].title} — ${formatLabel(e.format, locale)}`,
+      title: b[locale].title,
+      subtitle:
+        b[locale].blurb.length > 150 ? `${b[locale].blurb.slice(0, 150).trimEnd()}…` : b[locale].blurb,
+      specs: [
+        b.trim,
+        `${b.pages} ${locale === 'ru' ? 'стр.' : 'pages'}`,
+        b.regulation,
+        formatLabel(e.format, locale),
+      ],
+      price: e.price,
+      format: formatLabel(e.format, locale),
       href: `/${locale}/books/${b.slug}/`,
+      amazonUrl: e.amazonUrl,
     })),
   );
 
@@ -260,8 +272,8 @@ export default function Home({ params }: { params: { locale: string } }) {
         </div>
       </div>
 
-      {/* ================= 3D-КАРУСЕЛЬ ИЗДАНИЙ ================= */}
-      <section className="section">
+      {/* ================= 3D-ВИТРИНА ИЗДАНИЙ ================= */}
+      <section className="section section-veil">
         <div className="shell">
           <Reveal>
             <div className="mx-auto max-w-2xl text-center">
@@ -275,7 +287,11 @@ export default function Home({ params }: { params: { locale: string } }) {
           </Reveal>
           <Reveal delay={1}>
             <div className="mt-12">
-              <BookCarousel items={carouselItems} locale={locale} />
+              <BookShowcase
+                items={showcaseItems}
+                locale={locale}
+                label={t(locale, 'home.collection')}
+              />
             </div>
           </Reveal>
         </div>

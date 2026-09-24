@@ -41,7 +41,13 @@ function ChevronIcon({ open }: { open: boolean }) {
   );
 }
 
-export function LanguageSwitcher({ locale }: { locale: Locale }) {
+export function LanguageSwitcher({
+  locale,
+  variant = 'dropdown',
+}: {
+  locale: Locale;
+  variant?: 'dropdown' | 'inline';
+}) {
   const pathname = usePathname() || '/';
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -74,6 +80,29 @@ export function LanguageSwitcher({ locale }: { locale: Locale }) {
     const target = segments.join('/') || '/';
     router.push(target);
     setOpen(false);
+  }
+
+  // В мобильной шторке — сегменты во всю ширину: они физически не могут вылететь за экран.
+  if (variant === 'inline') {
+    return (
+      <div className="lang-seg" role="group" aria-label={t(locale, 'lang.switch')}>
+        {locales.map((l) => {
+          const active = l === locale;
+          return (
+            <button
+              key={l}
+              type="button"
+              className="lang-seg-btn"
+              aria-pressed={active}
+              onClick={() => switchTo(l)}
+            >
+              <span>{localeNames[l]}</span>
+              <span className="font-mono text-[11px] uppercase opacity-60">{l}</span>
+            </button>
+          );
+        })}
+      </div>
+    );
   }
 
   return (

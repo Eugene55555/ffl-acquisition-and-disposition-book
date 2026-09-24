@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import './globals.css';
+import './redesign.css';
 import { defaultLocale } from '@/src/i18n/settings';
 import { siteUrl } from '@/src/lib/seo';
 

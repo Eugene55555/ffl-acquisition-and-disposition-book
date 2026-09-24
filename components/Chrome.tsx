@@ -73,6 +73,22 @@ export function Header({ locale }: { locale: Locale }) {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  // Блокируем прокрутку фона, пока открыта шторка меню
+  useEffect(() => {
+    if (!open) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [open]);
+
+  // Перешли на другую страницу — меню и дропдаун закрываются сами
+  useEffect(() => {
+    setOpen(false);
+    setBooksOpen(false);
+  }, [pathname]);
+
   // Закрытие мобильного меню и дропдауна
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -245,16 +261,36 @@ export function Header({ locale }: { locale: Locale }) {
         </div>
       </header>
 
-      {/* Мобильное меню */}
+      {/* Мобильное меню — полноэкранная шторка: ничего не вылетает за экран */}
       {open && (
         <>
+          <div className="msheet-backdrop lg:hidden" onClick={() => setOpen(false)} aria-hidden="true" />
           <div
-            className="fixed inset-0 z-40 bg-sand-950/40 backdrop-blur-sm lg:hidden"
-            onClick={() => setOpen(false)}
-            aria-hidden="true"
-          />
-          <div className="fixed inset-x-0 top-16 z-50 max-h-[calc(100vh-4rem)] overflow-y-auto border-t border-sand-200 bg-white px-5 py-5 lg:hidden dark:border-sand-800 dark:bg-sand-950">
-            <p className="eyebrow mb-3">{t(locale, 'nav.books')}</p>
+            className="msheet lg:hidden"
+            role="dialog"
+            aria-modal="true"
+            aria-label={locale === 'ru' ? 'Меню' : 'Menu'}
+          >
+            <div className="msheet-top">
+              <span className="flex items-center gap-2.5">
+                <Monogram />
+                <span className="font-display text-base leading-none text-sand-900 dark:text-sand-50">
+                  {t(locale, 'brand.name')}
+                </span>
+              </span>
+              <button
+                type="button"
+                onClick={() => setOpen(false)}
+                aria-label={locale === 'ru' ? 'Закрыть' : 'Close'}
+                className="flex h-11 w-11 items-center justify-center rounded-full border border-sand-200 text-sand-600 transition-colors hover:border-brand-400 hover:text-brand-500 dark:border-sand-700 dark:text-sand-300"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" className="h-5 w-5" aria-hidden="true">
+                  <path d="M6 6l12 12M18 6L6 18" />
+                </svg>
+              </button>
+            </div>
+            <div className="msheet-body">
+              <p className="eyebrow mb-3">{t(locale, 'nav.books')}</p>
             <div className="mb-5 space-y-1">
               {BOOKS.map((book) => {
                 const cheapest = cheapestEdition(book);
@@ -306,11 +342,15 @@ export function Header({ locale }: { locale: Locale }) {
               </Link>
             </nav>
 
-            <div className="mt-5 flex items-center justify-between border-t border-sand-200 pt-4 dark:border-sand-800">
-              <LanguageSwitcher locale={locale} />
-              <Link href={`/${locale}/buy/`} onClick={() => setOpen(false)} className="btn-primary !py-2.5">
-                {t(locale, 'nav.buy')}
-              </Link>
+              <div className="msheet-foot">
+                <LanguageSwitcher locale={locale} variant="inline" />
+                <Link href={`/${locale}/buy/`} onClick={() => setOpen(false)} className="btn-primary w-full justify-center">
+                  {t(locale, 'nav.buy')}
+                </Link>
+              </div>
+              <p className="mt-4 text-center text-xs leading-relaxed text-sand-400 dark:text-sand-500">
+                {t(locale, 'brand.tagline')}
+              </p>
             </div>
           </div>
         </>

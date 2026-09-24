@@ -1,0 +1,669 @@
+/* ============================================================================
+   REDESIGN 2026 — «космическая» витрина 3D-книги, живой моушен,
+   мобильное меню-шторка, языковой переключатель без вылета за экран.
+   Всё на чистом CSS: нулевой вес, работает на композиторе GPU.
+   ========================================================================== */
+
+/* ---------------------------------------------------------------------------
+   1. ВИТРИНА: настоящая 3D-книга (обложка + корешок + торец страниц) с текстом
+   --------------------------------------------------------------------------- */
+.bk-showcase {
+  display: grid;
+  gap: 2.25rem;
+  align-items: center;
+}
+@media (min-width: 960px) {
+  .bk-showcase {
+    grid-template-columns: 1.02fr 1fr;
+    gap: 3.5rem;
+  }
+}
+
+.bk-stage {
+  --bk-w: clamp(148px, 44vw, 208px);
+  --bk-h: calc(var(--bk-w) * 1.29);
+  --bk-t: calc(var(--bk-w) * 0.165);
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: clamp(340px, 52vw, 470px);
+  perspective: 1400px;
+  perspective-origin: 50% 42%;
+  touch-action: pan-y;
+  cursor: grab;
+  isolation: isolate;
+  -webkit-tap-highlight-color: transparent;
+}
+.bk-stage[data-dragging='true'] { cursor: grabbing; }
+.bk-stage:focus-visible {
+  outline: 2px solid var(--color-brand-500, #f97f0e);
+  outline-offset: 10px;
+  border-radius: 28px;
+}
+
+/* Свечение и орбиты позади книги */
+.bk-orbit {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  z-index: -1;
+}
+.bk-orbit i {
+  position: absolute;
+  border-radius: 50%;
+  display: block;
+}
+.bk-orbit .bk-ring-a {
+  width: min(84%, 440px);
+  aspect-ratio: 1;
+  border: 1px solid color-mix(in oklch, var(--color-brand-500, #f97f0e) 26%, transparent);
+  animation: bkRingSpin 30s linear infinite;
+}
+.bk-orbit .bk-ring-b {
+  width: min(62%, 320px);
+  aspect-ratio: 1;
+  border: 1px dashed color-mix(in oklch, var(--color-brand-400, #ff9d36) 22%, transparent);
+  animation: bkRingSpin 22s linear infinite reverse;
+}
+.bk-orbit .bk-glow {
+  width: min(90%, 480px);
+  aspect-ratio: 1;
+  background: radial-gradient(
+    circle at 50% 45%,
+    color-mix(in oklch, var(--color-brand-500, #f97f0e) 22%, transparent) 0%,
+    color-mix(in oklch, var(--color-brand-600, #e26405) 8%, transparent) 42%,
+    transparent 70%
+  );
+  filter: blur(6px);
+  animation: bkGlowPulse 8s ease-in-out infinite;
+}
+@keyframes bkRingSpin { to { transform: rotate(360deg); } }
+@keyframes bkGlowPulse {
+  0%, 100% { opacity: 0.75; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.06); }
+}
+
+/* Автовращение — чистый CSS, живёт на композиторе (не зависит от JS/тача) */
+.bk-spin {
+  transform-style: preserve-3d;
+  animation: bkSpin var(--bk-dur, 20s) linear infinite;
+}
+.bk-stage[data-paused='true'] .bk-spin { animation-play-state: paused; }
+/* Пауза при наведении — только там, где есть настоящий курсор.
+   На тач-экранах :hover «залипает», из-за чего вращение раньше умирало. */
+@media (hover: hover) and (pointer: fine) {
+  .bk-stage:hover .bk-spin { animation-play-state: paused; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bk-spin { animation: none; }
+  .bk-orbit i { animation: none; }
+  .bk-stage[data-spin='true'] .bk-spin { animation: bkSpin 7s cubic-bezier(0.22, 1, 0.36, 1) 1; }
+}
+
+/* Потянуть пальцем/мышью: вращение вокруг оси Y */
+.bk-drag {
+  transform-style: preserve-3d;
+  transform: rotateY(var(--bk-dy, 0deg));
+}
+.bk-stage[data-snap='true'] .bk-drag {
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+/* Наклон от курсора + лёгкий отклик на скролл */
+.bk-tilt {
+  transform-style: preserve-3d;
+  transform: rotateX(calc(var(--bk-rx, -7deg) + var(--bk-sy, 0deg))) rotateZ(var(--bk-rz, 0deg));
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Сама книга: 6 граней настоящего параллелепипеда */
+.bk {
+  position: relative;
+  width: var(--bk-w);
+  height: var(--bk-h);
+  transform-style: preserve-3d;
+}
+.bk-face {
+  position: absolute;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+}
+.bk-front,
+.bk-back {
+  inset: 0;
+  border-radius: 2px 6px 6px 2px;
+  overflow: hidden;
+}
+.bk-front {
+  transform: translateZ(calc(var(--bk-t) / 2));
+  box-shadow: inset -14px 0 26px -18px rgba(0, 0, 0, 0.75);
+}
+.bk-back {
+  transform: rotateY(180deg) translateZ(calc(var(--bk-t) / 2));
+  background:
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.05) 0 1px, transparent 1px 9px),
+    linear-gradient(135deg, #241d17, #171412);
+  box-shadow: inset 12px 0 26px -18px rgba(0, 0, 0, 0.8);
+}
+/* Обложки сложены стопкой — переключение без мерцания */
+.bk-cover {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  user-select: none;
+  -webkit-user-drag: none;
+}
+.bk-cover[data-on='true'] { opacity: 1; }
+
+/* Корешок с вертикальным текстом */
+.bk-spine {
+  left: calc(50% - var(--bk-t) / 2);
+  top: 0;
+  width: var(--bk-t);
+  height: 100%;
+  transform: rotateY(-90deg) translateZ(calc(var(--bk-w) / 2));
+  background: linear-gradient(180deg, #3a2c1e 0%, #221a13 45%, #2c2117 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  box-shadow: inset 0 0 18px rgba(0, 0, 0, 0.6);
+}
+.bk-spine span {
+  writing-mode: vertical-rl;
+  font-family: var(--font-display, Georgia, serif);
+  font-size: calc(var(--bk-w) * 0.062);
+  letter-spacing: 0.06em;
+  color: #e9c894;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.6);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-height: calc(100% - 56px);
+}
+.bk-spine i {
+  writing-mode: vertical-rl;
+  font-style: normal;
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: calc(var(--bk-w) * 0.038);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: color-mix(in oklch, #e9c894 55%, transparent);
+}
+
+/* Торец страниц: полосы + толщина */
+.bk-pages {
+  left: calc(50% - var(--bk-t) / 2);
+  top: 0;
+  width: var(--bk-t);
+  height: 100%;
+  transform: rotateY(90deg) translateZ(calc(var(--bk-w) / 2));
+  background:
+    repeating-linear-gradient(90deg, #e8e2d6 0 1px, #cfc6b6 1px 2.4px),
+    #ded6c7;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.28);
+}
+.bk-top,
+.bk-bottom {
+  left: 0;
+  top: calc(50% - var(--bk-t) / 2);
+  width: 100%;
+  height: var(--bk-t);
+  background: repeating-linear-gradient(0deg, #e8e2d6 0 1px, #cec5b5 1px 2.4px);
+}
+.bk-top { transform: rotateX(90deg) translateZ(calc(var(--bk-h) / 2)); }
+.bk-bottom { transform: rotateX(-90deg) translateZ(calc(var(--bk-h) / 2)); }
+
+/* Тень-подставка под книгой */
+.bk-shadow {
+  position: absolute;
+  left: 50%;
+  top: calc(50% + var(--bk-h) * 0.72);
+  width: calc(var(--bk-w) * 1.35);
+  height: calc(var(--bk-w) * 0.28);
+  transform: translate(-50%, -50%);
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.55) 0%, transparent 72%);
+  filter: blur(9px);
+  animation: bkShadowBreathe 6s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes bkShadowBreathe {
+  0%, 100% { opacity: 0.75; transform: translate(-50%, -50%) scale(1); }
+  50% { opacity: 1; transform: translate(-50%, -50%) scale(1.05); }
+}
+
+/* Парящие подписи вокруг книги (десктоп) */
+.bk-float {
+  position: absolute;
+  display: none;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in oklch, var(--color-brand-500, #f97f0e) 26%, transparent);
+  background: color-mix(in oklch, #0c0a09 72%, transparent);
+  backdrop-filter: blur(6px);
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #e7cfa8;
+  white-space: nowrap;
+  pointer-events: none;
+  animation: bkFloatY 7s ease-in-out infinite;
+}
+@media (min-width: 960px) { .bk-float { display: inline-flex; } }
+.bk-float[data-pos='tl'] { left: -2%; top: 12%; animation-delay: -0.8s; }
+.bk-float[data-pos='tr'] { right: -3%; top: 22%; animation-delay: -2.4s; }
+.bk-float[data-pos='bl'] { left: 2%; bottom: 16%; animation-delay: -4s; }
+.bk-float[data-pos='br'] { right: 1%; bottom: 26%; animation-delay: -5.6s; }
+@keyframes bkFloatY {
+  0%, 100% { transform: translateY(-4px); }
+  50% { transform: translateY(4px); }
+}
+@media (prefers-reduced-motion: reduce) { .bk-float { animation: none; } }
+
+/* ---------------------------------------------------------------------------
+   2. ИНФО-ПАНЕЛЬ ВИТРИНЫ (живой текст рядом с книгой)
+   --------------------------------------------------------------------------- */
+.bk-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-width: 0;
+}
+.bk-panel-in { animation: bkPanelIn 0.55s cubic-bezier(0.22, 1, 0.36, 1) both; }
+@keyframes bkPanelIn {
+  from { opacity: 0; transform: translateY(14px); filter: blur(4px); }
+  to { opacity: 1; transform: none; filter: blur(0); }
+}
+.bk-panel .bk-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-brand-600, #e26405);
+}
+.bk-panel .bk-kicker::before {
+  content: '';
+  width: 26px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.6;
+}
+.bk-title {
+  font-family: var(--font-display, Georgia, serif);
+  font-size: clamp(1.55rem, 5.2vw, 2.35rem);
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+}
+.bk-sub {
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: var(--color-sand-500, #78716c);
+}
+.bk-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+.bk-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.65rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in oklch, var(--color-sand-500, #78716c) 26%, transparent);
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--color-sand-500, #78716c);
+}
+.bk-price-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.6rem 1rem;
+  padding-top: 0.35rem;
+}
+.bk-price {
+  font-family: var(--font-display, Georgia, serif);
+  font-size: clamp(1.9rem, 6vw, 2.5rem);
+  line-height: 1;
+  color: var(--color-brand-600, #e26405);
+  font-variant-numeric: tabular-nums;
+}
+.bk-price-note {
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-sand-500, #78716c);
+}
+.bk-ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 0.3rem;
+}
+.bk-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+  padding-top: 1rem;
+  border-top: 1px solid color-mix(in oklch, var(--color-sand-500, #78716c) 20%, transparent);
+}
+.bk-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  flex: none;
+  border-radius: 999px;
+  border: 1px solid color-mix(in oklch, var(--color-sand-500, #78716c) 30%, transparent);
+  color: inherit;
+  transition: transform 0.3s var(--ease-out-soft, cubic-bezier(0.22, 1, 0.36, 1)),
+    border-color 0.3s, background-color 0.3s, color 0.3s;
+}
+.bk-arrow:hover {
+  transform: translateY(-2px);
+  border-color: var(--color-brand-500, #f97f0e);
+  color: var(--color-brand-600, #e26405);
+}
+.bk-arrow:active { transform: translateY(0) scale(0.96); }
+.bk-dots {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-left: auto;
+}
+.bk-dot {
+  width: 26px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+.bk-dot::after {
+  content: '';
+  width: 24px;
+  height: 3px;
+  border-radius: 999px;
+  background: color-mix(in oklch, var(--color-sand-500, #78716c) 35%, transparent);
+  transition: background-color 0.35s, transform 0.35s var(--ease-out-soft, cubic-bezier(0.22, 1, 0.36, 1));
+}
+.bk-dot[aria-current='true']::after {
+  background: var(--color-brand-500, #f97f0e);
+  transform: scaleX(1.12);
+}
+.bk-counter {
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: var(--color-sand-500, #78716c);
+  font-variant-numeric: tabular-nums;
+}
+.bk-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  color: var(--color-sand-500, #78716c);
+}
+.bk-play {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 44px;
+  padding: 0 0.4rem;
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-sand-500, #78716c);
+  background: none;
+  border: 0;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+.bk-play:hover { color: var(--color-brand-600, #e26405); }
+
+/* ---------------------------------------------------------------------------
+   3. МОБИЛЬНОЕ МЕНЮ-ШТОРКА (ничего не улетает за экран)
+   --------------------------------------------------------------------------- */
+.msheet-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background: color-mix(in oklch, #0c0a09 62%, transparent);
+  backdrop-filter: blur(8px);
+  animation: mFade 0.25s ease-out both;
+}
+@keyframes mFade { from { opacity: 0; } to { opacity: 1; } }
+
+.msheet {
+  position: fixed;
+  inset: 0 0 0 0;
+  z-index: 70;
+  display: flex;
+  flex-direction: column;
+  background: color-mix(in oklch, var(--color-sand-50, #faf9f7) 96%, transparent);
+  overflow: hidden;
+  animation: mSheetIn 0.34s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.dark .msheet { background: color-mix(in oklch, #0c0a09 97%, transparent); }
+@keyframes mSheetIn {
+  from { opacity: 0; transform: translateY(-8px) scale(0.995); }
+  to { opacity: 1; transform: none; }
+}
+.msheet-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 1.25rem;
+  min-height: 64px;
+  border-bottom: 1px solid color-mix(in oklch, var(--color-sand-500, #78716c) 18%, transparent);
+}
+.msheet-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  padding: 1.1rem 1.25rem calc(1.5rem + env(safe-area-inset-bottom, 0px));
+}
+.msheet-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 52px;
+  padding: 0.65rem 0.85rem;
+  border-radius: 14px;
+  font-size: 16px;
+  font-weight: 500;
+  transition: background-color 0.25s, color 0.25s;
+}
+.msheet-item:hover { background: color-mix(in oklch, var(--color-brand-500, #f97f0e) 8%, transparent); }
+.msheet-item[aria-current='page'] {
+  background: color-mix(in oklch, var(--color-brand-500, #f97f0e) 12%, transparent);
+  color: var(--color-brand-600, #e26405);
+}
+.msheet-book {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  min-height: 64px;
+  padding: 0.5rem 0.5rem;
+  border-radius: 14px;
+  transition: background-color 0.25s;
+}
+.msheet-book:hover { background: color-mix(in oklch, var(--color-brand-500, #f97f0e) 8%, transparent); }
+.msheet-book img {
+  width: 44px;
+  height: 57px;
+  flex: none;
+  border-radius: 4px;
+  object-fit: cover;
+  box-shadow: 0 8px 18px -10px rgba(0, 0, 0, 0.6);
+}
+.msheet-foot {
+  display: grid;
+  gap: 0.75rem;
+  padding-top: 1rem;
+  margin-top: 0.5rem;
+  border-top: 1px solid color-mix(in oklch, var(--color-sand-500, #78716c) 18%, transparent);
+}
+
+/* Языковой переключатель: сегменты во всю ширину — не может вылететь за экран */
+.lang-seg {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 0.25rem;
+  width: 100%;
+  padding: 0.25rem;
+  border-radius: 14px;
+  border: 1px solid color-mix(in oklch, var(--color-sand-500, #78716c) 22%, transparent);
+  background: color-mix(in oklch, var(--color-sand-500, #78716c) 7%, transparent);
+}
+.lang-seg-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  min-height: 44px;
+  border-radius: 11px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-sand-500, #78716c);
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  transition: background-color 0.25s, color 0.25s, box-shadow 0.25s;
+}
+.lang-seg-btn[aria-pressed='true'] {
+  background: #fff;
+  color: var(--color-brand-600, #e26405);
+  box-shadow: 0 2px 10px -4px rgba(12, 10, 9, 0.35);
+}
+.dark .lang-seg-btn[aria-pressed='true'] { background: #1c1815; }
+.lang-seg-btn:not([aria-pressed='true']):hover { color: inherit; }
+
+/* ---------------------------------------------------------------------------
+   4. ЖИВОЙ МОУШЕН: карточки с 3D-наклоном, магнитные кнопки, счётчики
+   --------------------------------------------------------------------------- */
+.tilt-wrap { perspective: 900px; }
+.tilt {
+  transform-style: preserve-3d;
+  transform: rotateX(calc(var(--ty, 0) * -1deg)) rotateY(calc(var(--tx, 0) * 1deg)) translateZ(0);
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s;
+  will-change: transform;
+}
+.tilt:hover {
+  box-shadow: 0 32px 60px -34px rgba(12, 10, 9, 0.55);
+}
+.tilt-shine {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s;
+  background: radial-gradient(
+    220px circle at var(--mx, 50%) var(--my, 50%),
+    color-mix(in oklch, var(--color-brand-400, #ff9d36) 22%, transparent),
+    transparent 60%
+  );
+}
+.tilt:hover .tilt-shine { opacity: 1; }
+
+.magnetic { transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1); will-change: transform; }
+
+.counter-num { font-variant-numeric: tabular-nums; }
+
+/* Тонкая «дышащая» линия-разделитель */
+.hairline-x {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in oklch, var(--color-brand-500, #f97f0e) 42%, transparent),
+    transparent
+  );
+  background-size: 200% 100%;
+  animation: hairlineSlide 9s linear infinite;
+}
+@keyframes hairlineSlide {
+  from { background-position: 0% 0; }
+  to { background-position: 200% 0; }
+}
+
+/* Появление секций: варианты (clip / scale / blur) */
+.rv { opacity: 0; transition: opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1), transform 0.75s cubic-bezier(0.22, 1, 0.36, 1), filter 0.75s; }
+.rv[data-v='up'] { transform: translateY(26px); }
+.rv[data-v='scale'] { transform: scale(0.96); }
+.rv[data-v='blur'] { filter: blur(10px); transform: translateY(10px); }
+.rv[data-v='left'] { transform: translateX(-24px); }
+.rv[data-v='right'] { transform: translateX(24px); }
+.rv[data-in='true'] { opacity: 1; transform: none; filter: blur(0); }
+
+@media (prefers-reduced-motion: reduce) {
+  .rv { opacity: 1; transform: none; filter: none; transition: none; }
+  .hairline-x, .bk-shadow, .bk-orbit i { animation: none; }
+  .tilt, .magnetic { transition: none; }
+}
+
+/* ---------------------------------------------------------------------------
+   5. Космические акценты оформления
+   --------------------------------------------------------------------------- */
+.section-veil {
+  position: relative;
+  isolation: isolate;
+}
+.section-veil::before {
+  content: '';
+  position: absolute;
+  inset: -10% -5%;
+  z-index: -1;
+  background: radial-gradient(
+      60% 50% at 18% 0%,
+      color-mix(in oklch, var(--color-brand-500, #f97f0e) 10%, transparent),
+      transparent 70%
+    ),
+    radial-gradient(50% 60% at 100% 30%, color-mix(in oklch, #3b82f6 7%, transparent), transparent 72%);
+  pointer-events: none;
+}
+.glow-text {
+  background: linear-gradient(
+    100deg,
+    var(--color-brand-600, #e26405),
+    var(--color-brand-400, #ff9d36) 48%,
+    var(--color-brand-600, #e26405)
+  );
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: glowTextSlide 8s linear infinite;
+}
+@keyframes glowTextSlide {
+  from { background-position: 0% 0; }
+  to { background-position: 220% 0; }
+}
+@media (prefers-reduced-motion: reduce) { .glow-text { animation: none; } }

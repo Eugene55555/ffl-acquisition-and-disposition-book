@@ -116,11 +116,17 @@
 .bk-stage[data-snap='true'] .bk-drag {
   transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
 }
-/* Наклон от курсора + лёгкий отклик на скролл */
+/* Наклон от курсора + отклик на скролл + наклон от хвата (--bk-gx) */
 .bk-tilt {
   transform-style: preserve-3d;
-  transform: rotateX(calc(var(--bk-rx, -7deg) + var(--bk-sy, 0deg))) rotateZ(var(--bk-rz, 0deg));
+  transform: rotateX(calc(var(--bk-rx, -7deg) + var(--bk-sy, 0deg) + var(--bk-gx, 0deg)))
+    rotateZ(var(--bk-rz, 0deg));
   transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+/* Пока книгу держат — вращение идёт 1:1 за рукой, без догоняющих переходов */
+.bk-stage[data-dragging='true'] .bk-tilt,
+.bk-stage[data-dragging='true'] .bk-drag {
+  transition: none;
 }
 
 /* Сама книга: 6 граней настоящего параллелепипеда */

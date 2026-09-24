@@ -86,6 +86,10 @@
 }
 
 /* Автовращение — чистый CSS, живёт на композиторе (не зависит от JS/тача) */
+@keyframes bkSpin {
+  from { transform: rotateY(0deg); }
+  to { transform: rotateY(360deg); }
+}
 .bk-spin {
   transform-style: preserve-3d;
   animation: bkSpin var(--bk-dur, 20s) linear infinite;
@@ -635,6 +639,7 @@
 .section-veil {
   position: relative;
   isolation: isolate;
+  overflow-x: clip;
 }
 .section-veil::before {
   content: '';
@@ -642,11 +647,11 @@
   inset: -10% -5%;
   z-index: -1;
   background: radial-gradient(
-      60% 50% at 18% 0%,
+      58% 50% at 16% 0%,
       color-mix(in oklch, var(--color-brand-500, #f97f0e) 10%, transparent),
       transparent 70%
     ),
-    radial-gradient(50% 60% at 100% 30%, color-mix(in oklch, #3b82f6 7%, transparent), transparent 72%);
+    radial-gradient(42% 52% at 86% 28%, color-mix(in oklch, #3b82f6 7%, transparent), transparent 72%);
   pointer-events: none;
 }
 .glow-text {

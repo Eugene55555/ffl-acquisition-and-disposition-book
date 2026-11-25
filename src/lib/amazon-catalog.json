@@ -1,0 +1,168 @@
+{
+  "sourceUrl": "https://www.amazon.com/stores/Silas-Thorne/author/B0HBNRT3MS?ref=ap_rdr&shoppingPortalEnabled=true",
+  "sourcePageUrl": "https://www.amazon.com/stores/author/B0HBNRT3MS/allbooks?_encoding=UTF8",
+  "sourceSnapshotAt": "2026-11-25T04:48:50Z",
+  "lastVerified": "2026-11-25",
+  "sourceListingCount": 10,
+  "formatAsinCount": 17,
+  "authorStoreUrl": "https://www.amazon.com/stores/Silas-Thorne/author/B0HBNRT3MS?ref=ap_rdr&shoppingPortalEnabled=true",
+  "items": [
+    {
+      "slug": "shooting-range-log-book",
+      "mainAsin": "B0HM1BMTHP",
+      "category": "range",
+      "bookSlug": null,
+      "sourceTitle": "Shooting Range Log Book: 200 Range Sessions to Record Date, Firearm, Ammo, Conditions, Group Size and Scores, Shooting Range Journal and Logbook for Rifle and Pistol Shooters",
+      "title": {"en": "Shooting Range Log Book", "ru": "Журнал стрельб"},
+      "subtitle": {"en": "200 range sessions · 212 pages · 6 × 9 in", "ru": "200 тренировок · 212 страниц · 6 × 9 дюймов"},
+      "summary": {"en": "A session-by-session record for rifle and pistol practice, including firearm, ammunition, conditions, group size and scores.", "ru": "Журнал для тренировок с винтовкой и пистолетом: оружие, боеприпасы, условия, размер группы и результаты."},
+      "cover": "shooting-range-log.jpg",
+      "sourceCoverUrl": "https://m.media-amazon.com/images/I/518ZIG0fPML._AC_CR0%2C0%2C0%2C0_SY315_.jpg",
+      "offers": [
+        {"format": "hardcover", "asin": "B0HM1BMTHP", "price": "$18.99", "amazonUrl": "https://www.amazon.com/dp/B0HM1BMTHP"},
+        {"format": "paperback", "asin": "B0HM1WHB7M", "price": "$9.99", "amazonUrl": "https://www.amazon.com/dp/B0HM1WHB7M"}
+      ]
+    },
+    {
+      "slug": "ffl-acquisition-disposition-200",
+      "mainAsin": "B0HH6J6Q4D",
+      "category": "ffl",
+      "bookSlug": "ffl-acquisition-disposition-200",
+      "sourceTitle": "FFL Acquisition and Disposition Book: 200 Pages & 1372 Record Entries – ATF Compliant Bound Gun A&D Log Ledger with Serial Number Record for Firearm Dealer and Manufacturer Tracking",
+      "title": {"en": "FFL Acquisition and Disposition Book: 200 Pages & 1,372 Record Entries", "ru": "Журнал FFL: приобретение и отчуждение — 200 страниц и 1 372 записи"},
+      "subtitle": {"en": "200 pages · 1,372 record entries", "ru": "200 страниц · 1 372 записи"},
+      "summary": {"en": "The 200-page edition of the FFL acquisition and disposition ledger.", "ru": "Издание журнала учёта FFL на 200 страниц."},
+      "cover": "ffl-200-hc.jpg",
+      "sourceCoverUrl": "https://m.media-amazon.com/images/I/51YyIRVFDxL._AC_CR0%2C0%2C0%2C0_SY315_.jpg",
+      "offers": [
+        {"format": "hardcover", "asin": "B0HH6J6Q4D", "price": "$20.99", "amazonUrl": "https://www.amazon.com/dp/B0HH6J6Q4D"},
+        {"format": "paperback", "asin": "B0HH6LZYFM", "price": "$14.99", "amazonUrl": "https://www.amazon.com/dp/B0HH6LZYFM"}
+      ]
+    },
+    {
+      "slug": "ffl-acquisition-disposition-120",
+      "mainAsin": "B0H6VSF6S6",
+      "category": "ffl",
+      "bookSlug": "ffl-acquisition-disposition-120",
+      "sourceTitle": "FFL Acquisition and Disposition Book: ATF Compliant Bound Gun A&D Log Ledger with Serial Number Record for Firearm Dealer and Manufacturer Tracking",
+      "title": {"en": "FFL Acquisition & Disposition Book", "ru": "Журнал FFL: приобретение и отчуждение"},
+      "subtitle": {"en": "120 pages · pre-formatted A&D ledger", "ru": "120 страниц · готовый A&D-журнал"},
+      "summary": {"en": "The core 120-page FFL acquisition and disposition record book.", "ru": "Основной журнал учёта FFL на 120 страниц."},
+      "cover": "ffl-120-hc.jpg",
+      "sourceCoverUrl": "https://m.media-amazon.com/images/I/51AyRnIPcDL._AC_CR0%2C0%2C0%2C0_SY315_.jpg",
+      "offers": [
+        {"format": "hardcover", "asin": "B0H6VSF6S6", "price": "$18.99", "amazonUrl": "https://www.amazon.com/dp/B0H6VSF6S6"},
+        {"format": "paperback", "asin": "B0H6V4X481", "price": "$13.99", "amazonUrl": "https://www.amazon.com/dp/B0H6V4X481"}
+      ]
+    },
+    {
+      "slug": "ffl-acquisition-disposition-red",
+      "mainAsin": "B0HN3767N5",
+      "category": "ffl",
+      "bookSlug": null,
+      "sourceTitle": "FFL Acquisition and Disposition Book: ATF Compliant Bound Gun A&D Log Ledger with Serial Number Record for Firearm Dealer and Manufacturer Tracking Red",
+      "title": {"en": "FFL A&D Book — Red Cover", "ru": "Журнал FFL A&D — красная обложка"},
+      "subtitle": {"en": "Red cover · paperback and hardcover", "ru": "Красная обложка · мягкий и твёрдый переплёт"},
+      "summary": {"en": "The FFL acquisition and disposition book listing with a red cover, in two binding options.", "ru": "Журнал учёта FFL с красной обложкой, доступный в двух вариантах переплёта."},
+      "cover": "ffl-red-cover.jpg",
+      "sourceCoverUrl": "https://m.media-amazon.com/images/I/51fp0huMEYL._AC_CR0%2C0%2C0%2C0_SY315_.jpg",
+      "offers": [
+        {"format": "hardcover", "asin": "B0HN3767N5", "price": "$19.99", "amazonUrl": "https://www.amazon.com/dp/B0HN3767N5"},
+        {"format": "paperback", "asin": "B0HN2RB41P", "price": "$13.99", "amazonUrl": "https://www.amazon.com/dp/B0HN2RB41P"}
+      ]
+    },
+    {
+      "slug": "ffl-acquisition-disposition-600",
+      "mainAsin": "B0HNXTR3PW",
+      "category": "ffl",
+      "bookSlug": null,
+      "sourceTitle": "FFL Acquisition and Disposition Book: 600 Record Entries - ATF Compliant Bound Gun A&D Log Ledger with Serial Number Record for Firearm Dealer and Manufacturer Tracking",
+      "title": {"en": "FFL A&D Book — 600 Entries", "ru": "Журнал FFL A&D — 600 записей"},
+      "subtitle": {"en": "600 record entries · paperback", "ru": "600 записей · мягкая обложка"},
+      "summary": {"en": "A paperback FFL acquisition and disposition ledger listed with 600 record entries.", "ru": "Журнал учёта FFL в мягкой обложке, рассчитанный на 600 записей."},
+      "cover": "ffl-600-entries.jpg",
+      "sourceCoverUrl": "https://m.media-amazon.com/images/I/51hLY1u8zzL._AC_CR0%2C0%2C0%2C0_SY315_.jpg",
+      "offers": [
+        {"format": "paperback", "asin": "B0HNXTR3PW", "price": "$13.99", "amazonUrl": "https://www.amazon.com/dp/B0HNXTR3PW"}
+      ]
+    },
+    {
+      "slug": "ffl-acquisition-disposition-blue",
+      "mainAsin": "B0HN2Z11KM",
+      "category": "ffl",
+      "bookSlug": null,
+      "sourceTitle": "FFL Acquisition and Disposition Book: ATF Compliant Bound Gun A&D Log Ledger with Serial Number Record for Firearm Dealer and Manufacturer Tracking Blue",
+      "title": {"en": "FFL A&D Book — Blue Cover", "ru": "Журнал FFL A&D — синяя обложка"},
+      "subtitle": {"en": "120 pages · blue cover · paperback and hardcover", "ru": "120 страниц · синяя обложка · мягкий и твёрдый переплёт"},
+      "summary": {"en": "The 120-page FFL acquisition and disposition book listing with a blue cover.", "ru": "Издание журнала FFL на 120 страниц с синей обложкой."},
+      "cover": "ffl-blue-cover.jpg",
+      "sourceCoverUrl": "https://m.media-amazon.com/images/I/51MH3LvJE9L._AC_CR0%2C0%2C0%2C0_SY315_.jpg",
+      "offers": [
+        {"format": "hardcover", "asin": "B0HN2Z11KM", "price": "$19.99", "amazonUrl": "https://www.amazon.com/dp/B0HN2Z11KM"},
+        {"format": "paperback", "asin": "B0HMY3JXB6", "price": "$13.99", "amazonUrl": "https://www.amazon.com/dp/B0HMY3JXB6"}
+      ]
+    },
+    {
+      "slug": "ffl-acquisition-disposition-300",
+      "mainAsin": "B0HP71P67V",
+      "category": "ffl",
+      "bookSlug": null,
+      "sourceTitle": "FFL Acquisition and Disposition Book: 300 Record Entries - ATF Compliant Bound Gun A&D Log Ledger with Serial Number Record for Firearm Dealer and Manufacturer Tracking",
+      "title": {"en": "FFL A&D Book — 300 Entries", "ru": "Журнал FFL A&D — 300 записей"},
+      "subtitle": {"en": "300 record entries · paperback", "ru": "300 записей · мягкая обложка"},
+      "summary": {"en": "A compact paperback FFL acquisition and disposition ledger listed with 300 record entries.", "ru": "Компактный журнал учёта FFL в мягкой обложке на 300 записей."},
+      "cover": "ffl-300-entries.jpg",
+      "sourceCoverUrl": "https://m.media-amazon.com/images/I/51OmuipxTnL._AC_CR0%2C0%2C0%2C0_SY315_.jpg",
+      "offers": [
+        {"format": "paperback", "asin": "B0HP71P67V", "price": "$9.99", "amazonUrl": "https://www.amazon.com/dp/B0HP71P67V"}
+      ]
+    },
+    {
+      "slug": "firearms-dealer-ad-log-landscape",
+      "mainAsin": "B0HC4JKFJV",
+      "category": "ffl",
+      "bookSlug": "firearms-dealer-ad-log-landscape",
+      "sourceTitle": "Firearms Dealer A&D Log: FFL Bound Book Format | Landscape Inventory Log for Dealers and Collectors (Professional Compliance Series)",
+      "title": {"en": "Firearms Dealer A&D Log — Landscape", "ru": "Журнал A&D для оружейного дилера — альбомный"},
+      "subtitle": {"en": "11 × 8.5 in wide format · Professional Compliance Series", "ru": "11 × 8,5 дюйма, широкая страница · Professional Compliance Series"},
+      "summary": {"en": "The landscape-format FFL acquisition and disposition ledger.", "ru": "Альбомный журнал учёта приобретения и отчуждения для FFL."},
+      "cover": "ffl-landscape-hc.jpg",
+      "sourceCoverUrl": "https://m.media-amazon.com/images/I/51BbiN3J0xL._AC_CR0%2C0%2C0%2C0_SY315_.jpg",
+      "offers": [
+        {"format": "hardcover", "asin": "B0HC4JKFJV", "price": "$19.99", "amazonUrl": "https://www.amazon.com/dp/B0HC4JKFJV"},
+        {"format": "paperback", "asin": "B0H38N8XNL", "price": "$10.99", "amazonUrl": "https://www.amazon.com/dp/B0H38N8XNL"}
+      ]
+    },
+    {
+      "slug": "ffl-acquisition-disposition-240",
+      "mainAsin": "B0HRQN65RC",
+      "category": "ffl",
+      "bookSlug": null,
+      "sourceTitle": "FFL Acquisition and Disposition Book: ATF Compliant Bound Gun A&D Log Ledger with Serial Number Record for Firearm Dealer and Manufacturer Tracking 240",
+      "title": {"en": "FFL A&D Book — 240 Entries", "ru": "Журнал FFL A&D — 240 записей"},
+      "subtitle": {"en": "240 record entries · paperback and hardcover", "ru": "240 записей · мягкая и твёрдая обложка"},
+      "summary": {"en": "The 240-entry FFL acquisition and disposition book listing in two binding options.", "ru": "Издание журнала учёта FFL на 240 записей в двух вариантах переплёта."},
+      "cover": "ffl-240-entries.jpg",
+      "sourceCoverUrl": "https://m.media-amazon.com/images/I/51IrGw99TAL._AC_CR0%2C0%2C0%2C0_SY315_.jpg",
+      "offers": [
+        {"format": "hardcover", "asin": "B0HRQN65RC", "price": "$24.99", "amazonUrl": "https://www.amazon.com/dp/B0HRQN65RC"},
+        {"format": "paperback", "asin": "B0HRQQSBZQ", "price": "$19.99", "amazonUrl": "https://www.amazon.com/dp/B0HRQQSBZQ"}
+      ]
+    },
+    {
+      "slug": "shooting-range-log-book-legacy",
+      "mainAsin": "B0HLY2LXCV",
+      "category": "range",
+      "bookSlug": null,
+      "sourceTitle": "Shooting Range Log Book: 200 Range Sessions to Record Date, Firearm, Ammo, Conditions, Group Size and Scores, Shooting Range Journal and Logbook for Rifle and Pistol Shooters",
+      "title": {"en": "Shooting Range Log Book — Legacy Paperback", "ru": "Журнал стрельб — прежнее издание в мягкой обложке"},
+      "subtitle": {"en": "Paperback · 212 pages · limited availability", "ru": "Мягкая обложка · 212 страниц · ограниченная доступность"},
+      "summary": {"en": "Amazon marks this older listing as out of print with limited availability. Check Amazon for its current status.", "ru": "Amazon помечает прежний листинг как снятый с печати и ограниченно доступный. Проверьте его статус на Amazon."},
+      "cover": "shooting-range-log.jpg",
+      "sourceCoverUrl": "https://m.media-amazon.com/images/I/518ZIG0fPML._AC_CR0%2C0%2C0%2C0_SY315_.jpg",
+      "offers": [
+        {"format": "paperback", "asin": "B0HLY2LXCV", "price": null, "availability": "Out of Print—Limited Availability", "amazonUrl": "https://www.amazon.com/dp/B0HLY2LXCV"}
+      ]
+    }
+  ]
+}

@@ -312,6 +312,17 @@ export default function Home({ params }: { params: { locale: string } }) {
               <BookGrid locale={locale} />
             </Reveal>
           </div>
+          <Reveal delay={2}>
+            <div className="mt-8 flex flex-col gap-4 rounded-2xl border border-sand-200 bg-white p-6 sm:flex-row sm:items-center sm:justify-between dark:border-sand-800 dark:bg-sand-900/40">
+              <p className="max-w-2xl text-sm leading-relaxed text-sand-600 dark:text-sand-400">
+                {t(locale, 'home.fullCatalog')}
+              </p>
+              <Link href={`/${locale}/buy/`} className="btn-primary w-fit shrink-0">
+                {t(locale, 'home.fullCatalogCta')}
+                <ArrowIcon className="h-4 w-4" />
+              </Link>
+            </div>
+          </Reveal>
         </div>
       </section>
 

@@ -2,10 +2,13 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 import { t } from '@/src/i18n/ui';
 import { locales, type Locale } from '@/src/i18n/settings';
-import { BOOKS, bookUrl, formatLabel, cheapestEdition, seriesLabel } from '@/src/lib/products';
+import { BOOKS, bookUrl, formatLabel, getBook } from '@/src/lib/products';
+import { AMAZON_CATALOG } from '@/src/lib/amazon-catalog';
 import { alternatesFor, OG_IMAGE } from '@/src/lib/seo';
 import { Reveal } from '@/components/Reveal';
 import { Parallax } from '@/components/Parallax';
+
+const BASE_PATH = process.env.BASE_PATH || '/ffl-acquisition-and-disposition-book';
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -40,29 +43,47 @@ export default function BuyPage({ params }: { params: { locale: string } }) {
           <Reveal>
             <p className="eyebrow">{t(locale, 'nav.buy')}</p>
             <h1 className="display mt-4 max-w-3xl text-4xl text-sand-900 sm:text-6xl dark:text-sand-50">
-              {localTitle(locale)}
+              {localTitle()}
             </h1>
             <p className="lede mt-6 max-w-2xl">{t(locale, 'buy.subtitle')}</p>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+              <a
+                href={AMAZON_CATALOG.authorStoreUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-primary w-fit"
+              >
+                {t(locale, 'buy.authorStore')}
+                <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M7 17 17 7M9 7h8v8" />
+                </svg>
+              </a>
+              <p className="text-xs leading-relaxed text-sand-500 dark:text-sand-400">
+                {t(locale, 'buy.priceNote')} {AMAZON_CATALOG.lastVerified}. {t(locale, 'buy.priceNoteTail')}
+              </p>
+            </div>
           </Reveal>
         </div>
       </section>
 
-      {/* ==== Все книги и издания ==== */}
+      {/* ==== Все позиции авторского Amazon Store ==== */}
       <section className="pb-8">
         <div className="shell space-y-16">
-          {BOOKS.map((book, idx) => {
-            const text = book[locale];
-            const cover = cheapestEdition(book).cover;
+          {AMAZON_CATALOG.items.map((item, idx) => {
+            const book = item.bookSlug ? getBook(item.bookSlug) : undefined;
+            const title = book ? book[locale].title : item.title[locale];
+            const subtitle = book ? book[locale].subtitle : item.subtitle[locale];
+            const blurb = book ? book[locale].blurb : item.summary[locale];
             return (
-              <Reveal key={book.slug} delay={(idx % 2 === 0 ? 1 : 2) as 1 | 2}>
+              <Reveal key={item.slug} delay={(idx % 2 === 0 ? 1 : 2) as 1 | 2}>
                 <article className="surface grid gap-10 overflow-hidden p-6 sm:p-8 lg:grid-cols-[0.75fr_1.25fr]">
                   <Parallax speed={0.05}>
                     <div className="relative mx-auto max-w-[15rem] lg:mx-0">
                       <div aria-hidden="true" className="absolute inset-6 rounded-full bg-brand-400/20 blur-3xl" />
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
-                        src={cover}
-                        alt={text.title}
+                        src={`${BASE_PATH}/images/${item.cover}`}
+                        alt={title}
                         className="relative w-full rounded-lg shadow-[0_30px_60px_-28px_rgba(12,10,9,0.55)]"
                         loading="lazy"
                       />
@@ -70,43 +91,47 @@ export default function BuyPage({ params }: { params: { locale: string } }) {
                   </Parallax>
 
                   <div>
-                    <p className="eyebrow">{seriesLabel(book.series, locale)}</p>
+                    <p className="eyebrow">
+                      {t(locale, item.category === 'range' ? 'buy.categoryRange' : 'buy.categoryFfl')}
+                    </p>
                     <h2 className="display mt-3 text-3xl text-sand-900 dark:text-sand-50">
-                      <Link href={bookUrl(book, locale)} className="link-sweep">
-                        {text.title}
-                      </Link>
+                      {book ? (
+                        <Link href={bookUrl(book, locale)} className="link-sweep">{title}</Link>
+                      ) : title}
                     </h2>
                     <p className="mt-3 font-mono text-[11px] uppercase tracking-[0.16em] text-sand-400">
-                      {text.subtitle}
+                      {subtitle}
                     </p>
                     <p className="mt-5 text-sm leading-relaxed text-sand-600 dark:text-sand-400">
-                      {text.blurb}
+                      {blurb}
                     </p>
 
                     <div className="mt-7 grid gap-4 sm:grid-cols-2">
-                      {book.editions.map((edition) => (
+                      {item.offers.map((offer) => (
                         <div
-                          key={edition.asin}
+                          key={offer.asin}
                           className="group rounded-2xl border border-sand-200 p-5 transition-all duration-500 hover:-translate-y-1 hover:border-brand-300 dark:border-sand-800"
                         >
                           <div className="flex items-baseline justify-between gap-3">
                             <span className="text-sm font-semibold text-sand-900 dark:text-sand-50">
-                              {formatLabel(edition.format, locale)}
+                              {formatLabel(offer.format, locale)}
                             </span>
-                            <span className="font-display text-xl text-sand-900 dark:text-sand-50">
-                              {edition.price}
+                            <span className={offer.price
+                              ? 'font-display text-xl text-sand-900 dark:text-sand-50'
+                              : 'max-w-[12rem] text-right text-xs leading-snug text-sand-500 dark:text-sand-400'}>
+                              {offer.price ?? offer.availability}
                             </span>
                           </div>
                           <p className="mt-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-sand-400">
-                            ASIN {edition.asin}
+                            ASIN {offer.asin}
                           </p>
                           <a
-                            href={edition.amazonUrl}
+                            href={offer.amazonUrl}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="btn-primary mt-4 w-full !py-2.5 !text-[13px]"
                           >
-                            {t(locale, 'buy.cta')}
+                            {t(locale, offer.price ? 'buy.cta' : 'buy.checkAvailability')}
                             <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                               <path d="M7 17 17 7M9 7h8v8" />
                             </svg>
@@ -115,12 +140,14 @@ export default function BuyPage({ params }: { params: { locale: string } }) {
                       ))}
                     </div>
 
-                    <Link
-                      href={bookUrl(book, locale)}
-                      className="link-sweep mt-6 inline-flex text-sm font-semibold text-brand-600 dark:text-brand-400"
-                    >
-                      Full book details →
-                    </Link>
+                    {book && (
+                      <Link
+                        href={bookUrl(book, locale)}
+                        className="link-sweep mt-6 inline-flex text-sm font-semibold text-brand-600 dark:text-brand-400"
+                      >
+                        {t(locale, 'buy.details')}
+                      </Link>
+                    )}
                   </div>
                 </article>
               </Reveal>
@@ -134,7 +161,7 @@ export default function BuyPage({ params }: { params: { locale: string } }) {
         <div className="shell max-w-4xl">
           <Reveal>
             <h2 className="display text-3xl text-sand-900 sm:text-4xl dark:text-sand-50">
-              Compare
+              {t(locale, 'buy.compareTitle')}
             </h2>
           </Reveal>
           <Reveal delay={1}>
@@ -237,6 +264,6 @@ export default function BuyPage({ params }: { params: { locale: string } }) {
   );
 }
 
-function localTitle(locale: Locale): string {
-  return 'Three books. Six editions.';
+function localTitle(): string {
+  return `${AMAZON_CATALOG.sourceListingCount} Amazon listings · ${AMAZON_CATALOG.formatAsinCount} linked ASINs`;
 }

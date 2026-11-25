@@ -1,10 +1,11 @@
 import { type Locale } from '@/src/i18n/settings';
+import { pricedAmazonOffer, type AmazonFormat } from './amazon-catalog';
 
 // === КАТАЛОГ КНИГ ===
 // Единый реестр: правка здесь обновляет карточки, лендинги книг, магазин и SEO.
-// Цены, ASIN и форматы — фактические данные с Amazon (проверено 23.09.2026).
+// ASIN, форматы и цены берутся из текущего снимка Amazon в amazon-catalog.json.
 
-export type Format = 'paperback' | 'hardcover';
+export type Format = AmazonFormat;
 
 export type Edition = {
   format: Format;
@@ -38,7 +39,6 @@ export type Book = {
   ru: BookText;
 };
 
-const AMZ = 'https://www.amazon.com';
 const BASE = process.env.BASE_PATH || '/ffl-acquisition-and-disposition-book';
 const cover = (file: string) => `${BASE}/images/${file}`;
 
@@ -51,20 +51,8 @@ export const BOOKS: Book[] = [
     regulation: '27 CFR § 478.125',
     featured: true,
     editions: [
-      {
-        format: 'paperback',
-        asin: 'B0H6V4X481',
-        amazonUrl: `${AMZ}/dp/B0H6V4X481`,
-        price: '$13.99',
-        cover: cover('ffl-120-pb.jpg'),
-      },
-      {
-        format: 'hardcover',
-        asin: 'B0H6VSF6S6',
-        amazonUrl: `${AMZ}/dp/B0H6VSF6S6`,
-        price: '$19.99',
-        cover: cover('ffl-120-hc.jpg'),
-      },
+      { ...pricedAmazonOffer('B0H6V4X481'), cover: cover('ffl-120-pb.jpg') },
+      { ...pricedAmazonOffer('B0H6VSF6S6'), cover: cover('ffl-120-hc.jpg') },
     ],
     en: {
       title: 'FFL Acquisition & Disposition Book',
@@ -140,20 +128,8 @@ export const BOOKS: Book[] = [
     regulation: '27 CFR § 478.125',
     featured: true,
     editions: [
-      {
-        format: 'paperback',
-        asin: 'B0HH6LZYFM',
-        amazonUrl: `${AMZ}/dp/B0HH6LZYFM`,
-        price: '$14.99',
-        cover: cover('ffl-200-pb.jpg'),
-      },
-      {
-        format: 'hardcover',
-        asin: 'B0HH6J6Q4D',
-        amazonUrl: `${AMZ}/dp/B0HH6J6Q4D`,
-        price: '$20.99',
-        cover: cover('ffl-200-hc.jpg'),
-      },
+      { ...pricedAmazonOffer('B0HH6LZYFM'), cover: cover('ffl-200-pb.jpg') },
+      { ...pricedAmazonOffer('B0HH6J6Q4D'), cover: cover('ffl-200-hc.jpg') },
     ],
     en: {
       title: 'FFL Acquisition & Disposition Book — 200 Pages',
@@ -227,20 +203,8 @@ export const BOOKS: Book[] = [
     trim: '11 × 8.5 in (landscape)',
     regulation: '27 CFR § 478.125',
     editions: [
-      {
-        format: 'paperback',
-        asin: 'B0H38N8XNL',
-        amazonUrl: `${AMZ}/dp/B0H38N8XNL`,
-        price: '$11.99',
-        cover: cover('ffl-landscape-pb.jpg'),
-      },
-      {
-        format: 'hardcover',
-        asin: 'B0HC4JKFJV',
-        amazonUrl: `${AMZ}/dp/B0HC4JKFJV`,
-        price: '$19.99',
-        cover: cover('ffl-landscape-hc.jpg'),
-      },
+      { ...pricedAmazonOffer('B0H38N8XNL'), cover: cover('ffl-landscape-pb.jpg') },
+      { ...pricedAmazonOffer('B0HC4JKFJV'), cover: cover('ffl-landscape-hc.jpg') },
     ],
     en: {
       title: 'Firearms Dealer A&D Log — Landscape',
